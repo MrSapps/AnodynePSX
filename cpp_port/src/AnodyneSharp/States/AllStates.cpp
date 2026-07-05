@@ -133,6 +133,55 @@ void PlayState::Warp() {
 
     Vector2 camPos = MapUtilities::GetRoomUpperLeftPos(gridPos);
     SpriteDrawer::Camera_.GoTo(camPos);
+
+    SetBackground();
+}
+
+void PlayState::SetBackground()
+{
+    SDL_Log("PlayState::SetBackground: CURRENT_MAP=%s", GlobalState::CURRENT_MAP_NAME.c_str());
+
+    if (GlobalState::CURRENT_MAP_NAME == "BLANK")
+    {
+        _background.Load("BLANK_BG", -20.0f, 0.0f);
+    }
+    else if (GlobalState::CURRENT_MAP_NAME == "SPACE")
+    {
+        _background.Load("SPACE_BG", -15.0f, 0.0f);
+    }
+    else if (GlobalState::CURRENT_MAP_NAME == "GO")
+    {
+        _background.Load("briar_BG", 0.0f, 15.0f);
+    }
+    else if (GlobalState::CURRENT_MAP_NAME == "NEXUS")
+    {
+        _background.Load("nexus_bg", 0.0f, 15.0f);
+    }
+    else if (GlobalState::CURRENT_MAP_NAME == "BOSSRUSH")
+    {
+        _background.Load("briar_BG", 0.0f, 15.0f);
+    }
+    else
+    {
+        _background = ScrollingTex();
+    }
+}
+
+void PlayState::MapSpecificUpdate()
+{
+    if (GlobalState::CURRENT_MAP_NAME == "BLANK")
+    {
+        if (GlobalState::RNG.NextDouble() < 0.05f)
+        {
+            GlobalState::screenShake.Shake(0.007f, 0.1f);
+        }
+
+        if (GlobalState::RNG.NextDouble() < 0.005f)
+        {
+            GlobalState::darkness.ForceAlpha(0.1f);
+            GlobalState::darkness.TargetAlpha(0.0f);
+        }
+    }
 }
 
 void PlayState::UpdateScreenBorders() {
@@ -257,6 +306,8 @@ void PlayState::Update() {
     // Add newly spawned entities (from GlobalState::SpawnEntity)
     // (Already added directly by the lambda — nothing to do here)
 
+    _background.Update();
+
     bool updateEntities = true;
     for (auto* s : _childStates) if (!s->UpdateEntities) { updateEntities = false; break; }
 
@@ -374,6 +425,8 @@ void PlayState::Update() {
     // Tick the quicksave anti-spam timer
     if (_quickSaveTimer > 0.f) _quickSaveTimer -= GameTimes::DeltaTime();
 
+    MapSpecificUpdate();
+
     // Deferred QuickLoad: must happen at end of update to avoid re-entrancy
     if (_doQuickLoad) { _doQuickLoad = false; QuickLoad(); }
 }
@@ -397,6 +450,8 @@ void PlayState::QuickLoad() {
 }
 
 void PlayState::Draw() {
+    _background.Draw(10.0f);
+
     if (_map) _map->Draw(SpriteDrawer::Camera_.Bounds());
     for (auto& e : _entities) if (e->exists) e->Draw();
     if (_player->exists) _player->Draw();

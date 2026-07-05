@@ -43,6 +43,8 @@ public:
     static bool HasBeenReset();
 
 private:
+    void SetBackground();
+
     std::unique_ptr<Entities::Player>              _player;
     std::unique_ptr<MapData::Map>                  _map;
     std::unique_ptr<Entities::CollisionGroups>     _collision;
@@ -52,6 +54,7 @@ private:
     Rectangle      _gridBorders{};
     PSState        _psState = PSState::S_LOAD;
     UI::HealthBar  _healthBar;
+    AnodyneSharp::Drawing::ScrollingTex   _background;
 
     void SpawnEntities();
     void UpdateEntitiesFn();
@@ -62,6 +65,7 @@ private:
     bool CheckInteraction();
     void QuickSave();
     void QuickLoad();
+    void MapSpecificUpdate();
 
     bool  _doQuickLoad    = false;
     float _quickSaveTimer = 5.f;  // prevents spam after loading
