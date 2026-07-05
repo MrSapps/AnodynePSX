@@ -87,6 +87,8 @@ static Texture2D* LoadPNG(const std::string& path) {
     SDL_DestroySurface(surf);
     if (!tex) { stbi_image_free(data); return nullptr; }
 
+    SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_NEAREST);
+
     auto* t = new Texture2D();
     t->AttachSDL(tex, w, h);
     // Cache raw RGBA bytes so effects (e.g. BlendEffect) can read pixel data on the CPU
@@ -104,6 +106,7 @@ static Texture2D* LoadPNG(const std::string& path) {
     SDL_UpdateTexture(tex, nullptr, pixels.data(), 16 * 4);
     auto* t = new Texture2D();
     t->AttachSDL(tex, 16, 16);
+    SDL_SetTextureScaleMode(tex, SDL_SCALEMODE_NEAREST);
     return t;
 #endif
 }

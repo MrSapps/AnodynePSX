@@ -115,6 +115,8 @@ void SpriteDrawer::Load(ContentManager& /*content*/) {
             SDL_SetTextureBlendMode(t, SDL_BLENDMODE_BLEND);
             SolidTex = new Texture2D();
             SolidTex->AttachSDL(t, 1, 1);
+
+            SDL_SetTextureScaleMode(t, SDL_SCALEMODE_NEAREST);
         }
     }
 }

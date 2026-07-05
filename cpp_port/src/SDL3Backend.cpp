@@ -47,6 +47,7 @@ void Game::Run() {
         SDL_DestroyWindow(SDL3Context::Window);
         SDL_Quit(); return;
     }
+
     // Vsync keeps RenderPresent locked to display refresh so DeltaTime stays accurate
     SDL_SetRenderVSync(SDL3Context::Renderer, 1);
 
@@ -63,7 +64,10 @@ void Game::Run() {
         SDL_TEXTUREACCESS_TARGET,
         SDL3Context::GAME_W, SDL3Context::GAME_H);
     if (SDL3Context::OffscreenTarget)
+    {
+        SDL_SetTextureScaleMode(SDL3Context::OffscreenTarget, SDL_SCALEMODE_NEAREST);
         SDL_SetTextureBlendMode(SDL3Context::OffscreenTarget, SDL_BLENDMODE_BLEND);
+    }
 
     // Create streaming texture for CPU pixel-effect upload
     SDL3Context::EffectTexture = SDL_CreateTexture(
@@ -72,7 +76,10 @@ void Game::Run() {
         SDL_TEXTUREACCESS_STREAMING,
         SDL3Context::GAME_W, SDL3Context::GAME_H);
     if (SDL3Context::EffectTexture)
+    {
+        SDL_SetTextureScaleMode(SDL3Context::EffectTexture, SDL_SCALEMODE_NEAREST);
         SDL_SetTextureBlendMode(SDL3Context::EffectTexture, SDL_BLENDMODE_NONE);
+    }
 
     // Audio device
     SDL3Context::AudioSpec = { SDL_AUDIO_F32LE, 2, 44100 };
@@ -159,7 +166,11 @@ RenderTarget2D::RenderTarget2D(GraphicsDevice* dev, int w, int h)
         sdlTex = SDL_CreateTexture(dev->sdlRenderer,
             SDL_PIXELFORMAT_RGBA8888,
             SDL_TEXTUREACCESS_TARGET, w, h);
-        if (sdlTex) SDL_SetTextureBlendMode(sdlTex, SDL_BLENDMODE_BLEND);
+        if (sdlTex) 
+        {
+            SDL_SetTextureScaleMode(sdlTex, SDL_SCALEMODE_NEAREST);
+            SDL_SetTextureBlendMode(sdlTex, SDL_BLENDMODE_BLEND);
+        }
     }
 }
 
