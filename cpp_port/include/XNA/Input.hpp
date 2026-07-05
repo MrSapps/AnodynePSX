@@ -275,7 +275,7 @@ public:
         return ms;
     }
     static void SetPosition(int x, int y) {
-        extern SDL_Window* g_SDLWindow;
+        //extern SDL_Window* g_SDLWindow;
         // SDL_WarpMouseInWindow(g_SDLWindow, x, y);  // skip for now
     }
 };

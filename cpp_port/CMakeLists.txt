@@ -8,8 +8,15 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # --------------------------------------------------------------------------
 # SDL3 backend
 # --------------------------------------------------------------------------
-set(SDL3_ROOT "${CMAKE_SOURCE_DIR}/../SDL3-3.4.10" CACHE PATH "SDL3 root directory")
-find_package(SDL3 REQUIRED CONFIG PATHS "${SDL3_ROOT}" NO_DEFAULT_PATH)
+if (LINUX)
+    set(SDL3_DIR "${CMAKE_SOURCE_DIR}/SDL3-3.4.12/install/usr/local/lib/cmake/SDL3")
+endif()
+
+if (WIN32)
+    set(SDL3_ROOT "${CMAKE_SOURCE_DIR}/../SDL3-3.4.10" CACHE PATH "SDL3 root directory")
+endif()
+
+find_package(SDL3 REQUIRED CONFIG)
 
 # --------------------------------------------------------------------------
 # Compiler flags
@@ -72,12 +79,14 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # Copy SDL3.dll next to the executable
-add_custom_command(TARGET AnodyneSharp POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${SDL3_ROOT}/lib/x64/SDL3.dll"
-        "$<TARGET_FILE_DIR:AnodyneSharp>"
-    COMMENT "Copying SDL3.dll"
-)
+if (WIN32)
+    add_custom_command(TARGET AnodyneSharp POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${SDL3_ROOT}/lib/x64/SDL3.dll"
+            "$<TARGET_FILE_DIR:AnodyneSharp>"
+        COMMENT "Copying SDL3.dll"
+    )
+endif()
 
 message(STATUS "AnodyneSharp C++ port build configured.")
 message(STATUS "  SDL3 root: ${SDL3_ROOT}")

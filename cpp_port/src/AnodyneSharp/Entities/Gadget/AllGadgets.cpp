@@ -80,6 +80,7 @@ Console::Console(EntityPreset* p, Player* /*pl*/)
 void Console::Update() { PostUpdate(); }
 void Console::Collided(Entity* o) { Separate(o, this); }
 bool Console::PlayerInteraction(Facing /*d*/) {
+    SDL_Log("Console::PlayerInteraction: activated=%d", _preset->GetActivated());
     if (_preset->GetActivated()) return false;
     _preset->SetActivated(true); Play("green"); GlobalState::PUZZLES_SOLVED++;
     Sounds::SoundManager::PlaySoundEffect("get_small_health");
@@ -183,6 +184,7 @@ void Explosion::Update(){Entity::Update();if(AnimFinished())exists=false;PostUpd
 bool Gate::ConditionSatisfied() const {
     int v = ((_preset->Frame_%10)>=5) ? GlobalState::PUZZLES_SOLVED : GlobalState::ENEMIES_KILLED;
     return v > (_preset->Frame_%5);
+    //return true;
 }
 Gate::Gate(EntityPreset*p,Player*pl)
     : Entity(p->Position,"gates",16,16,Drawing::DrawOrder::ENTITIES), _preset(p), _pl(pl)

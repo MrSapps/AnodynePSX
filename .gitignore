@@ -29,6 +29,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 
+cpp_port/build
+cpp_port/SDL3-3.4.12
+
 # Visual Studio 2015 cache/options directory
 .vs/
 # Uncomment if you have tasks that create the project's static files in wwwroot

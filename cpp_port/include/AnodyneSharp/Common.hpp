@@ -23,10 +23,10 @@
 #include <chrono>
 #include <random>
 #include <sstream>
-#include <format>
 #include <stdexcept>
 #include <type_traits>
 #include <iostream>
+#include <iomanip>
 
 // ---------------------------------------------------------------
 // Guid (simple UUID type)
@@ -41,7 +41,14 @@ struct Guid {
         return {counter++, counter++};
     }
     static Guid Empty;
-    std::string ToString() const { return std::format("{:016x}{:016x}", Hi, Lo); }
+    std::string ToString() const {
+    std::ostringstream oss;
+    oss << std::hex << std::setfill('0')
+        << std::setw(16) << Hi
+        << std::setw(16) << Lo;
+    return oss.str();
+}
+
 
     // Parse standard UUID string: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
     static Guid Parse(const std::string& s) {

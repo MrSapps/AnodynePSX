@@ -109,6 +109,8 @@ static Texture2D* LoadPNG(const std::string& path) {
 }
 
 void ResourceManager::LoadTextures(ContentManager& /*content*/) {
+    SDL_Log("ResourceManager: loading textures from '%s'", BaseDir.c_str());
+    
     // Scan the textures directory relative to BaseDir
     std::string texDir = BaseDir + "/Content/textures";
     if (!fs::exists(texDir)) {

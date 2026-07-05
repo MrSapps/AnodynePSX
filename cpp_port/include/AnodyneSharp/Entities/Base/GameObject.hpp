@@ -42,10 +42,10 @@ public:
     float    angularAcceleration = 0.f;
 
     bool     exists       = true;
-    bool     visible      = true;
-
+    
     int      width  = 0;
     int      height = 0;
+    bool     visible      = true;
     Touching touching        = Touching::NONE;
     Touching wasTouching     = Touching::NONE;
     Touching allowCollisions = Touching::ANY;

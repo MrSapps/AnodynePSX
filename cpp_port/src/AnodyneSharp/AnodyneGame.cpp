@@ -9,7 +9,7 @@
 #include "AnodyneSharp/Entities/EntityManager.hpp"
 #include "AnodyneSharp/Dialogue/DialogueManager.hpp"
 #include "SDL3Context.hpp"
-#include <format>
+//#include <format>
 
 // Static member definition (defined outside namespace)
 bool AnodyneSharp::Drawing::Effects::ScreenShake::Enabled = true;
@@ -24,7 +24,7 @@ AnodyneGame::AnodyneGame() {
 void AnodyneGame::Initialize() {
     // Set content root so ResourceManager and Map.cpp find assets
     ResourceManager::BaseDir =
-        "AnodyneSharp/AnodyneSharp/AnodyneSharp.Shared";
+        "/home/snake/dev/AnodynePSX/AnodyneSharp/AnodyneSharp.Shared";
 
     // Wire up quick-save / quick-load function pointers
     GlobalState::DoQuickSave = []() {
@@ -91,7 +91,9 @@ void AnodyneGame::Draw(const GameTime& gameTime) {
     GameTimes::UpdateFPS(gameTime);
 
     if (GlobalState::ShowFPS && _fpsLabel)
-        _fpsLabel->SetText(std::format("FPS: {:.0f}", GameTimes::FPS));
+    {
+    //    _fpsLabel->SetText(std::format("FPS: {:.0f}", GameTimes::FPS));
+    }
 
     Drawing::SpriteDrawer::BeginDraw();
     // Shake: displace world draw by a fraction of screen dimensions

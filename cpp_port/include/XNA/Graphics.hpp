@@ -221,7 +221,7 @@ struct PresentationParameters {
 // ---------------------------------------------------------------
 class GraphicsDevice {
 public:
-    PresentationParameters PresentationParameters;
+    PresentationParameters mPresentationParameters;
     SDL_Renderer* sdlRenderer = nullptr;  // set by Game::Run()
     SDL_Texture*  currentRT   = nullptr;  // current render target (null=screen)
 
@@ -289,8 +289,8 @@ public:
     int PreferredBackBufferHeight = 180;
     bool IsFullScreen = false;
     bool SynchronizeWithVerticalRetrace = true;
-    GraphicsProfile GraphicsProfile = GraphicsProfile::HiDef;
-    GraphicsDevice* GraphicsDevice = nullptr;
+    GraphicsProfile mGraphicsProfile = GraphicsProfile::HiDef;
+    GraphicsDevice* mGraphicsDevice = nullptr;
 
     GraphicsDeviceManager() = default;
     GraphicsDeviceManager(Game* game) {}

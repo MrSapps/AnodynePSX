@@ -79,7 +79,7 @@ KeyInput::InputState KeyInput::GetRebindableKeyState(KeyFunctions name) {
     auto it = RebindableKeys.find(name);
     if (it == RebindableKeys.end()) return InputState::NONE;
     InputState state = InputState::NONE;
-    for (auto& k : it->second.Keys) {
+    for (auto& k : it->second.mKeys) {
         auto sit = _keyState.find((int)k);
         if (sit != _keyState.end() && sit->second > state) state = sit->second;
     }

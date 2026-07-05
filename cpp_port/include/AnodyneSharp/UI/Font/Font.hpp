@@ -215,7 +215,7 @@ public:
             for (auto& c : _lines[i]) {
                 if (!c.Character.has_value()) {
                     if (_btn && c.Crop) {
-                        Rectangle cr = *c.Crop;
+                        //Rectangle cr = *c.Crop;
                         Drawing::SpriteDrawer::DrawSprite(_btn,
                             WriteAreaTopLeft() + Vector2{c.X, cy - BUTTON_HEIGHT / 4.f},
                             nullptr, nullptr, 0.f, 1.f, z);

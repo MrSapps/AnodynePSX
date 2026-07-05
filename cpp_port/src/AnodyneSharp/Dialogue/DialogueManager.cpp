@@ -249,8 +249,8 @@ std::string DialogueManager::ReplaceKeys(const std::string& line) {
 
     auto getKey = [](KF fn) -> Keys {
         auto it = KI::RebindableKeys.find(fn);
-        if (it == KI::RebindableKeys.end() || it->second.Keys.empty()) return Keys::None;
-        return it->second.Keys[0];
+        if (it == KI::RebindableKeys.end() || it->second.mKeys.empty()) return Keys::None;
+        return it->second.mKeys[0];
     };
     auto getBtn = [](KF fn) -> Buttons {
         auto it = KI::RebindableKeys.find(fn);

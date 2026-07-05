@@ -16,7 +16,7 @@ enum class KeyFunctions {
 };
 
 struct RebindableKey {
-    std::vector<Keys>        Keys;
+    std::vector<Keys>        mKeys;
     std::vector<Buttons>     ButtonsList;
     std::vector<MouseButton> MouseButtons;
     std::vector<GestureType> TouchGestures;
@@ -31,7 +31,7 @@ struct RebindableKey {
     RebindableKey(const std::vector<::Keys>& keys,
                   const std::vector<Buttons>& buttons = {},
                   PlayerIndex idx = PlayerIndex::One)
-        : Keys(keys), ButtonsList(buttons), GamePadPlayerIndex(idx) {}
+        : mKeys(keys), ButtonsList(buttons), GamePadPlayerIndex(idx) {}
 };
 
 struct PlayerButton {
