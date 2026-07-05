@@ -11,8 +11,8 @@ HealthDropper::HealthDropper(EntityPreset* p, Vector2 pos,
     Drawing::DrawOrder layer, float healthDropChance, bool dropBigHealth)
     : Entity(pos, std::move(spr), layer),
       _healthDropChance(healthDropChance),
-      _preset(p),
-      _health(std::make_unique<Interactive::HealthPickup>(pos, dropBigHealth)) {}
+      _health(std::make_unique<Interactive::HealthPickup>(pos, dropBigHealth)),
+      _preset(p) {}
 
 std::vector<Entity*> HealthDropper::SubEntities() {
     return { _health.get() };

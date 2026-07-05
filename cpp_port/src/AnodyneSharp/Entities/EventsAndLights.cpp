@@ -36,7 +36,7 @@ Checkpoint::Checkpoint(EntityPreset*p, Player*pl)
                                          GlobalState::IsCell() ? 6 : 2}, 12)
                  }),
              Drawing::DrawOrder::VERY_BG_ENTITIES)
-    , _pl(pl), _preset(p)
+    ,  _preset(p), _pl(pl)
 {
     width = height = 8;
     offset = {4, 4};
@@ -151,8 +151,8 @@ FadeSwitchSong::FadeSwitchSong(EntityPreset*p, Player*pl)
 
 FadeSwitchSong::FadeSwitchSong(const std::string& nextSong)
     : Entity(Vector2{0,0}, Drawing::DrawOrder::ENTITIES)
-    , _vol(0.f, 1.6f)
     , _next(nextSong)
+    , _vol(0.f, 1.6f)
 {
     visible = false;
 }

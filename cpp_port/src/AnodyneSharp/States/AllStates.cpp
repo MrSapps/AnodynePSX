@@ -536,9 +536,9 @@ void DeathState::DrawUI() {
     if (_gotControl) {
         if (_continueLabel) _continueLabel->Draw();
         // Draw > marker next to active option
-        Vector2 markerPos = _yesSelected
-            ? Vector2{_yesLabel->Position.X - 8.f, _yesLabel->Position.Y}
-            : Vector2{_noLabel->Position.X  - 8.f, _noLabel->Position.Y };
+        //Vector2 markerPos = _yesSelected
+        //    ? Vector2{_yesLabel->Position.X - 8.f, _yesLabel->Position.Y}
+        //    : Vector2{_noLabel->Position.X  - 8.f, _noLabel->Position.Y };
         // Simple text marker
         if (_yesLabel)  _yesLabel->Draw();
         if (_noLabel)   _noLabel->Draw();
@@ -1422,7 +1422,7 @@ void CardSubstate::SetCardPage() {
 // ConfigSubstate
 // ============================================================
 ConfigSubstate::ConfigSubstate() {
-    using DM = Dialogue::DialogueManager;
+    //using DM = Dialogue::DialogueManager;
     float x = 69.f, y = 28.f - (float)Registry::GameConstants::LineOffset();
     float step = (float)Registry::GameConstants::FONT_LINE_HEIGHT();
 

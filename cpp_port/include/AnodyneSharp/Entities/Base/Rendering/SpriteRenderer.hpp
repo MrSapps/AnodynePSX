@@ -158,7 +158,7 @@ private:
 class SolidColorRenderer : public ISpriteRenderer {
 public:
     SolidColorRenderer(Color color, int height, int width)
-        : _color(color), _height(height), _width(width) {}
+        : _height(height), _width(width), _color(color) {}
 
     bool AnimFinished() const override { return true; }
     Color& GetColor() override { return _color; }
