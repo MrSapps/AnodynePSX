@@ -103,8 +103,176 @@ namespace AnodyneSharp::States
                     .Condition([this]() { return AnyKeyPressed(); }, [](AbstractState* state) { state->ChangeState("PressStart"); })
                     .Condition([this]() { return notVisibleYet.empty(); }, [](AbstractState* state) { state->ChangeState("CreditsFade"); })
                 .End()
+                .State("CreditsFade")
+                    .Update([this](AbstractState* state, float t)
+                    {
+                        bool endFade = false;
 
+                        /*
+                        for (auto& label : creditsLabels)
+                        {
+                            float o = label.Opacity;
 
+                            if (MathUtilities::MoveTo(o, 0.3f, 0.6f))
+                                endFade = true;
+
+                            label.Opacity = o;
+                        }*/
+
+                        if (endFade)
+                        {
+                            _state->ChangeState("CreditsFadeEnd");
+                        }
+                    })
+                    .Condition([this]() { return AnyKeyPressed(); },
+                            [this](AbstractState* s) { _state->ChangeState("PressStart"); })
+                .End()
+                .State<TextFadeTimer>("CreditsFadeEnd")
+                    .Update([this](AbstractState* state, float t)
+                    {
+                        /*
+                        for (auto& label : mCreditsLabels)
+                        {
+                            float o = label.Opacity;
+                            MathUtilities::MoveTo(o, 0.0f, 2.0f);
+                            label.Opacity = o;
+                        }*/
+                    })
+                    .Condition([this]() { return AnyKeyPressed(); },
+                            [this](AbstractState* s) { _state->ChangeState("PressStart"); })
+                    .Event("EndFade", [this](AbstractState* state)
+                    {
+                        /*
+                        if (_secondNames)
+                        {
+                            _state->ChangeState("ScollUp");
+                        }
+                        else
+                        {
+                            _secondNames = true;
+
+                            credits[0] = DialogueManager::GetDialogue("misc", "any", "title", 5);
+                            credits[1] = DialogueManager::GetDialogue("misc", "any", "title", 6);
+                            credits[2] = DialogueManager::GetDialogue("misc", "any", "title", 7);
+
+                            _state->ChangeState("CreditsWrite");
+                        }*/
+                    })
+                .End()
+                .State("ScollUp")
+                    .Enter([this](AbstractState* state)
+                    {
+                        mNexusImage->velocity.Y = -20;
+                    })
+                    .Condition([this]()
+                    {
+                        return AnyKeyPressed() ||
+                            (mNexusImage->Position.Y + mNexusImage->height <= 180);
+                    },
+                    [this](AbstractState* s)
+                    {
+                        _state->ChangeState("PressStart");
+                    })
+                .End()
+                .State("PressStart")
+                    .Enter([this](AbstractState* s)
+                    {
+                        /*
+                        GlobalState::flash.Flash(
+                            1.5f,
+                            Color::White,
+                            [this]() { _state->ChangeState("DisplayTitle"); }
+                        );*/
+                    })
+                .End()
+                .State<PressEnterTimer>("DisplayTitle")
+                    .Enter([this](AbstractState* state)
+                    {
+                        //for (auto& label : mCreditsLabels)
+                        //    label.IsVisible = false;
+
+                        //GlobalState::TitleScreenFinish.Darkness =
+                        //    ResourceManager::GetTexture("title_overlay2");
+
+                        mNexusImage->Position.Y = 180 - mNexusImage->height;
+                        /*
+                        nexusImage.velocity.Y = 0;
+
+                        doorGlow.Position = { (160 - 64) / 2.0f, nexusImage.Position.Y + 17 };
+
+                        Vector2 spinPos = { doorGlow.Position.X, nexusImage.Position.Y };
+                        doorSpin1.Position = spinPos;
+                        doorSpin2.Position = spinPos;
+
+                        doorSpin1.angularVelocity = MathHelper::ToRadians(90);
+                        doorSpin2.angularVelocity = MathHelper::ToRadians(-90);
+
+                        doorGlow.visible = true;
+                        doorSpin1.visible = true;
+                        doorSpin2.visible = true;
+
+                        pressEnter.visible = true;
+                        title.visible = true;
+                        titleOverlay.visible = true;
+
+                        subtitle.visible = true;
+                        subtitleOverlay.visible = true;
+                        */
+                    })
+                    .Update([this](AbstractState* state, float t)
+                    {
+                        //MathUtilities::MoveTo(titleOverlay.opacity, 0.0f, 0.4f);
+                        //MathUtilities::MoveTo(subtitleOverlay.opacity, 0.0f, 0.4f);
+                    })
+                    .Event("BlinkEnter", [this](AbstractState* state)
+                    {
+                        //pressEnter.visible = !pressEnter.visible;
+                    })
+                    .Condition([this]() { return AnyKeyPressed(); },
+                            [this](AbstractState* s) { _state->ChangeState("Pixelate"); })
+                .End()
+                .State("Pixelate")
+                    .Update([this](AbstractState* state, float t)
+                    {
+                        //GlobalState::pixelation.AddPixelation(15);
+                         //GlobalState::black_overlay.ChangeAlpha(0.36f);
+                    })
+                    .Condition([this]()
+                    {
+                        return false; // TODO: fix this condition
+                        //return GlobalState::pixelation.Pixelation >= 15.0f;
+                    },
+                    [this](AbstractState* state)
+                    {
+                        _state->ChangeState("FadeOut");
+                    })
+                .End()
+                .State("FadeOut")
+                    .Update([this](AbstractState* state, float t)
+                    {
+                        GlobalState::pixelation.AddPixelation(15);
+                        GlobalState::black_overlay.ChangeAlpha(0.72f);
+                    })
+                    .Condition([this]()
+                    {
+                        return GlobalState::black_overlay.alpha >= 1.0f;
+                    },
+                    [this](AbstractState* state)
+                    {
+                        /*
+                        GlobalState::pixelation.SetPixelation(0);
+                        GlobalState::black_overlay.alpha = 0;
+
+                        GlobalState::flash.ForceAlpha(0);
+                        GlobalState::TitleScreenFinish.ForceAlpha(0);
+
+                        GlobalState::TitleScreenFinish.Entities.clear();
+                        GlobalState::TitleScreenFinish.Labels.clear();
+
+                        GlobalState::GameState.SetState<MainMenuState>();
+                        */
+                    })
+                .End()
                 .Build();
 
         _state->ChangeState("IntroFade");
