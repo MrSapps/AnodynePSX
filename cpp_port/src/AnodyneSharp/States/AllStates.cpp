@@ -657,20 +657,37 @@ void CreditsState::DrawUI() {
 // ---- TitleState ----
 TitleState::TitleState() {}
 void TitleState::Create() {
-    Sounds::SoundManager::PlaySong("title");
-    _background.Load("title_bg", 0.f, -30.f);
-    _nexusTex      = Resources::ResourceManager::GetTexture("door");
-    _titleTex      = Resources::ResourceManager::GetTexture("title_text");
-    _subtitleTex   = Resources::ResourceManager::GetTexture("title_remake");
-    _pressEnterTex = Resources::ResourceManager::GetTexture("press_enter");
-    GlobalState::flash.Flash(2.f, Color::Black);
-    SDL_Log("TitleState::Create door=%p title=%p subtitle=%p enter=%p flash=%.2f",
-        (void*)_nexusTex,(void*)_titleTex,(void*)_subtitleTex,(void*)_pressEnterTex,
-        GlobalState::flash.GetAlpha());
-}
-void TitleState::Update() {
-    _background.Update();
+    //_background.Load("title_bg", 0.f, -30.f);
+    
+    
+    // nexusImage
+//    mNexusImage = std::make_unique<UIEntity>(Vector2(0, 180), "door", GameConstants::SCREEN_WIDTH_IN_PIXELS, 116, DrawOrder::UI_OBJECTS);
+    mNexusImage = std::make_unique<UIEntity>(Vector2(0, -180), "door", GameConstants::SCREEN_WIDTH_IN_PIXELS, 116, DrawOrder::UI_OBJECTS);
 
+    mNexusImage->velocity.Y = 20.0f;
+
+    mDoorGlow = std::make_unique<UIEntity>(Vector2(64, 32), "door_glow", 64, 32, new RefLayer(mNexusImage->layer_def_get(), 1)); // TODO: fix leak
+    mDoorSpin1 = std::make_unique<UIEntity>(Vector2(0, 0), "door_spinglow1", 64, 64, new RefLayer(mNexusImage->layer_def_get(), 2)); // TODO: fix leak
+    mDoorSpin2 = std::make_unique<UIEntity>(Vector2(0, 0), "door_spinglow2", 64, 64, new RefLayer(mNexusImage->layer_def_get(), 2)); // TODO: fix leak
+    mPressEnterTex = std::make_unique<UIEntity>(Vector2((GameConstants::SCREEN_WIDTH_IN_PIXELS - 96) / 2, GameConstants::SCREEN_HEIGHT_IN_PIXELS), "press_enter", 96, 16, DrawOrder::MENUTEXT);
+
+    mTitleTex      = std::make_unique<UIEntity>(Vector2(0, 0), "title_text", 128, 48, DrawOrder::MENUTEXT);
+    mTitleOverlay      = std::make_unique<UIEntity>(Vector2(0, 0), "title_text_white", 128, 48, DrawOrder::TEXTBOX);
+
+    mSubtitle = std::make_unique<UIEntity>(Vector2(16), "title_remake", 71, 11, DrawOrder::MENUTEXT);
+    mSubtitleOverlay      = std::make_unique<UIEntity>(Vector2(0, 0), "title_remake_white", 71, 11, DrawOrder::TEXTBOX);
+
+    // TODO: Not here in CS
+    GlobalState::flash.Flash(2.f, Color::Black);
+
+    // TODO ??
+    //GlobalState::TitleScreenFinish;
+    //GlobalState.TitleScreenFinish.Entities.Add(pressEnter);
+
+    Sounds::SoundManager::PlaySong("title");
+}
+
+void TitleState::Update() {
     if (_pixelating) {
         GlobalState::pixelation.AddPixelation(15.f);
         GlobalState::black_overlay.ChangeAlpha(0.54f);
@@ -697,37 +714,58 @@ void TitleState::Update() {
             _pixelating = true;
         }
     }
+
+    _background.Update();
+
+    mNexusImage->Update();
+    mDoorGlow->Update();
+    mDoorSpin1->Update();
+    mDoorSpin2->Update();
+    mTitleTex->Update();
+    mTitleOverlay->Update();
+    mPressEnterTex->Update();
+
+    
+    mNexusImage->PostUpdate();
+    mDoorGlow->PostUpdate();
+    mDoorSpin1->PostUpdate();
+    mDoorSpin2->PostUpdate();
+    mTitleTex->PostUpdate();
+    mTitleOverlay->PostUpdate();
+    mPressEnterTex->PostUpdate();
+    
 }
+
 void TitleState::Draw()    {}
+
 void TitleState::DrawUI()  {
     float bgZ   = DrawingUtilities::GetDrawingZ(DrawOrder::BACKGROUND);
-    float uiZ   = DrawingUtilities::GetDrawingZ(DrawOrder::UI_OBJECTS);
-    float menuZ = DrawingUtilities::GetDrawingZ(DrawOrder::MENUTEXT);
+    //float uiZ   = DrawingUtilities::GetDrawingZ(DrawOrder::UI_OBJECTS);
+    //float menuZ = DrawingUtilities::GetDrawingZ(DrawOrder::MENUTEXT);
 
     _background.Draw(bgZ);
 
-    if (_nexusTex) {
-        int dy = 180 - _nexusTex->Height;
-        Rectangle dst{0, dy, 160, _nexusTex->Height};
-        SpriteDrawer::DrawSprite(_nexusTex, dst, nullptr, nullptr, 0.f,
-                                 SpriteEffects::None, uiZ);
-    }
-    if (_titleTex) {
-        Rectangle dst{16, 16, _titleTex->Width, _titleTex->Height};
-        SpriteDrawer::DrawSprite(_titleTex, dst, nullptr, nullptr, 0.f,
-                                 SpriteEffects::None, menuZ);
-    }
-    if (_subtitleTex) {
-        Rectangle dst{45, 47, _subtitleTex->Width, _subtitleTex->Height};
-        SpriteDrawer::DrawSprite(_subtitleTex, dst, nullptr, nullptr, 0.f,
-                                 SpriteEffects::None, menuZ);
-    }
+    mNexusImage->Draw();
+    /*
+    mDoorGlow->Draw();
+    mDoorSpin1->Draw();
+    mDoorSpin2->Draw();
+    mTitleTex->Draw();
+    mTitleOverlay->Draw();
+
+    mSubtitle->Draw();
+    mSubtitleOverlay->Draw();
+*/
+
+    //The UI labels get drawn in the TitleScreen overlay
+    /*
     if (_pressEnterVisible && _pressEnterTex && !GlobalState::flash.Active()) {
         int px = (160 - _pressEnterTex->Width) / 2;
         Rectangle dst{px, 160, _pressEnterTex->Width, _pressEnterTex->Height};
         SpriteDrawer::DrawSprite(_pressEnterTex, dst, nullptr, nullptr, 0.f,
                                  SpriteEffects::None, menuZ);
     }
+    */
 }
 
 // ---- IntroState ----

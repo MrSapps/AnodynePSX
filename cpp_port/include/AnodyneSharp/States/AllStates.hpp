@@ -147,10 +147,20 @@ public:
 
 private:
     Drawing::ScrollingTex _background;
-    Texture2D* _nexusTex      = nullptr;
-    Texture2D* _titleTex      = nullptr;
-    Texture2D* _subtitleTex   = nullptr;
-    Texture2D* _pressEnterTex = nullptr;
+
+    std::unique_ptr<UIEntity> mTitleTex;
+    std::unique_ptr<UIEntity> mTitleOverlay;    
+
+    std::unique_ptr<UIEntity> mSubtitle;
+    std::unique_ptr<UIEntity> mSubtitleOverlay;
+
+    std::unique_ptr<UIEntity> mNexusImage;
+
+    std::unique_ptr<UIEntity> mDoorGlow;
+    std::unique_ptr<UIEntity> mDoorSpin1;
+    std::unique_ptr<UIEntity> mDoorSpin2;
+
+    std::unique_ptr<UIEntity> mPressEnterTex;
 
     bool  _pressEnterVisible = false;
     float _blinkTimer        = 1.f;
