@@ -21,7 +21,7 @@ namespace AnodyneSharp.States.MainMenu
 {
     public class TitleState : State
     {
-        private static bool AnyKeyPressed => KeyInput.JustPressedRebindableKey(KeyFunctions.Accept) || KeyInput.JustPressedRebindableKey(KeyFunctions.Cancel) || KeyInput.JustPressedRebindableKey(KeyFunctions.Pause);
+        private static bool AnyKeyPressed => KeyInput.(KeyFunctions.Accept) || KeyInput.JustPressedRebindableKey(KeyFunctions.Cancel) || KeyInput.JustPressedRebindableKey(KeyFunctions.Pause);
 
 
         private ScrollingTex _background;

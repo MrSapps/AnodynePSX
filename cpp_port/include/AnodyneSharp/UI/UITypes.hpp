@@ -37,6 +37,7 @@ public:
 
     void Draw() override;
     void SetText(const std::string& text);
+    const std::string& GetText() const { return _text; }
 private:
     std::string _text;
     std::unique_ptr<Font::SpriteFont> _ownedFont;
