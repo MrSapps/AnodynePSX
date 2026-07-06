@@ -8,6 +8,7 @@
 #include "AnodyneSharp/Resources/ResourceManager.hpp"
 #include "AnodyneSharp/Entities/EntityManager.hpp"
 #include "AnodyneSharp/Dialogue/DialogueManager.hpp"
+#include "AnodyneSharp/States/TitleState.hpp"
 #include "SDL3Context.hpp"
 //#include <format>
 
