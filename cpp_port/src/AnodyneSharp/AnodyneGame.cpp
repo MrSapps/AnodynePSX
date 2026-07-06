@@ -92,7 +92,9 @@ void AnodyneGame::Draw(const GameTime& gameTime) {
 
     if (GlobalState::ShowFPS && _fpsLabel)
     {
-    //    _fpsLabel->SetText(std::format("FPS: {:.0f}", GameTimes::FPS));
+        char buffer[128] = {};
+        sprintf(buffer, "FPS: %.0f", GameTimes::FPS);
+        _fpsLabel->SetText(buffer);
     }
 
     Drawing::SpriteDrawer::BeginDraw();
@@ -104,6 +106,7 @@ void AnodyneGame::Draw(const GameTime& gameTime) {
     if (CurrentState) CurrentState->Draw();
     Drawing::SpriteDrawer::EndDraw();
 
+    
     Drawing::SpriteDrawer::BeginGUIDraw();
     if (CurrentState) CurrentState->DrawUI();
     if (GlobalState::ShowFPS && _fpsLabel) _fpsLabel->Draw();
