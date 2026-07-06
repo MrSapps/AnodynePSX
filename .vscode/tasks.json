@@ -1,0 +1,61 @@
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++-12 build active file",
+            "command": "make",
+            "args": [
+                "${file}"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/cpp_port/build"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Build selected cpp file"
+        },
+        {
+            "type": "cppbuild",
+            "label": "C/C++: build all",
+            "command": "make",
+            "args": [
+                "-j3"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/cpp_port/build"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "build all code"
+        },
+        {
+            "label": "Run AnodyneSharp",
+            "type": "shell",
+            "command": "${workspaceFolder}/cpp_port/build/AnodyneSharp",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build and Run AnodyneSharp",
+            "dependsOn": [
+                "build_all",
+                "Run AnodyneSharp"
+            ],
+            "problemMatcher": []
+        }
+    ],
+    "version": "2.0.0"
+}
