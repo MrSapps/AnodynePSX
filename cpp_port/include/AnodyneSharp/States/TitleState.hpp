@@ -113,6 +113,8 @@ private:
     UILabel* mCreditLabels[3] = {nullptr, nullptr, nullptr};
     std::vector<std::pair<int, int>> notVisibleYet;
 
+    bool _secondNames = false;
+
     bool  _pressEnterVisible = false;
     float _blinkTimer        = 1.f;
     bool  _pixelating        = false;

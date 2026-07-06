@@ -108,16 +108,16 @@ namespace AnodyneSharp::States
                     {
                         bool endFade = false;
 
-                        /*
-                        for (auto& label : creditsLabels)
+                        for (UILabel* label : mCreditLabels)
                         {
-                            float o = label.Opacity;
+                            float o = label->opacity;
 
                             if (MathUtilities::MoveTo(o, 0.3f, 0.6f))
+                            {
                                 endFade = true;
-
-                            label.Opacity = o;
-                        }*/
+                            }
+                            label->opacity = o;
+                        }
 
                         if (endFade)
                         {
@@ -130,19 +130,17 @@ namespace AnodyneSharp::States
                 .State<TextFadeTimer>("CreditsFadeEnd")
                     .Update([this](AbstractState* state, float t)
                     {
-                        /*
-                        for (auto& label : mCreditsLabels)
+                        for (UILabel* label : mCreditLabels)
                         {
-                            float o = label.Opacity;
+                            float o = label->opacity;
                             MathUtilities::MoveTo(o, 0.0f, 2.0f);
-                            label.Opacity = o;
-                        }*/
+                            label->opacity = o;
+                        }
                     })
                     .Condition([this]() { return AnyKeyPressed(); },
                             [this](AbstractState* s) { _state->ChangeState("PressStart"); })
                     .Event("EndFade", [this](AbstractState* state)
                     {
-                        /*
                         if (_secondNames)
                         {
                             _state->ChangeState("ScollUp");
@@ -151,12 +149,12 @@ namespace AnodyneSharp::States
                         {
                             _secondNames = true;
 
-                            credits[0] = DialogueManager::GetDialogue("misc", "any", "title", 5);
-                            credits[1] = DialogueManager::GetDialogue("misc", "any", "title", 6);
-                            credits[2] = DialogueManager::GetDialogue("misc", "any", "title", 7);
+                            mCredits[0] = DialogueManager::GetDialogue("misc", "any", "title", 5);
+                            mCredits[1] = DialogueManager::GetDialogue("misc", "any", "title", 6);
+                            mCredits[2] = DialogueManager::GetDialogue("misc", "any", "title", 7);
 
                             _state->ChangeState("CreditsWrite");
-                        }*/
+                        }
                     })
                 .End()
                 .State("ScollUp")
@@ -177,6 +175,7 @@ namespace AnodyneSharp::States
                 .State("PressStart")
                     .Enter([this](AbstractState* s)
                     {
+                        // TODO: Pass in function
                         /*
                         GlobalState::flash.Flash(
                             1.5f,
@@ -188,8 +187,10 @@ namespace AnodyneSharp::States
                 .State<PressEnterTimer>("DisplayTitle")
                     .Enter([this](AbstractState* state)
                     {
-                        //for (auto& label : mCreditsLabels)
-                        //    label.IsVisible = false;
+                        for (UILabel* label : mCreditLabels)
+                        {
+                            label->IsVisible = false;
+                        }
 
                         //GlobalState::TitleScreenFinish.Darkness =
                         //    ResourceManager::GetTexture("title_overlay2");
@@ -226,7 +227,7 @@ namespace AnodyneSharp::States
                     })
                     .Event("BlinkEnter", [this](AbstractState* state)
                     {
-                        //pressEnter.visible = !pressEnter.visible;
+                        //mPressEnter->visible = !mPressEnter->visible;
                     })
                     .Condition([this]() { return AnyKeyPressed(); },
                             [this](AbstractState* s) { _state->ChangeState("Pixelate"); })
@@ -284,7 +285,7 @@ namespace AnodyneSharp::States
         mCredits[1] = Dialogue::DialogueManager::GetDialogue("misc", "any", "credits", 3);
         mCredits[2] = Dialogue::DialogueManager::GetDialogue("misc", "any", "credits", 4);
 
-        //_background.Load("title_bg", 0.f, -30.f);
+        _background.Load("title_bg", 0.f, -30.f);
 
         // nexusImage
         //    mNexusImage = std::make_unique<UIEntity>(Vector2(0, 180), "door", GameConstants::SCREEN_WIDTH_IN_PIXELS, 116, DrawOrder::UI_OBJECTS);
