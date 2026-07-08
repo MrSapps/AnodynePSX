@@ -6,6 +6,11 @@
 #include <vector>
 #include <functional>
 
+namespace AnodyneSharp::UI {
+    class UIEntity;
+    class UILabel;
+}
+
 namespace AnodyneSharp::Drawing::Effects {
 
 // BlendEffect (blends overlay texture using shader) — renamed from 'Blend' to avoid XNA Blend enum conflict
@@ -65,6 +70,12 @@ public:
 
     Color GetFlashColor() const {
         return Color{_color.R, _color.G, _color.B, (unsigned char)(_alpha * 255.f)};
+    }
+
+    void ForceAlpha(float a)
+    {
+        // TODO
+        //target_alpha = alpha = a;
     }
 private:
     float _duration = 0.3f;
@@ -201,6 +212,15 @@ public:
     void Render(SpriteBatch& batch, Texture2D& screen) override {}
     void Update() override {}
     void Activate() { _active = true; }
+    Texture2D* Darkness = nullptr;  // set by TitleState
+    std::vector<AnodyneSharp::UI::UIEntity*> Entities;  // set by TitleState
+    std::vector<AnodyneSharp::UI::UILabel*> Labels;     // set by TitleState
+
+    void ForceAlpha(float a)
+    {
+        // TODO
+    }
+
 private:
     bool _active = false;
 };

@@ -46,8 +46,8 @@ namespace AnodyneSharp::States
                     .Enter([](AbstractState* state)
                     {
                         GlobalState::flash.Flash(2.0f, Color::Black);
-                        //GlobalState::TitleScreenFinish.Darkness = ResourceManager::GetTexture("title_overlay1");
-                        //GlobalState::TitleScreenFinish.ForceAlpha(1); // TODO Not on darkness ??
+                        GlobalState::TitleScreenFinish.Darkness = ResourceManager::GetTexture("title_overlay1");
+                        GlobalState::TitleScreenFinish.ForceAlpha(1);
                     })
                     .Condition([this]() { return AnyKeyPressed(); }, [](AbstractState* state) { state->ChangeState("PressStart"); })
                     .Condition([this]() { return !GlobalState::flash.Active(); }, [](AbstractState* state) { state->ChangeState("CreditsWrite"); })
@@ -63,12 +63,15 @@ namespace AnodyneSharp::States
 
                        Microsoft::Xna::Framework::Color color(68, 109, 113);
 
+                       // TODO: Ownership
                         mCreditLabels[0] = new UILabel(Vector2(center - (mCredits[0].length() * charWidth)/2, 88 -lineH-4), false, std::string(' ', mCredits[0].length()), color);
                         mCreditLabels[1] = new UILabel(Vector2(center - (mCredits[1].length() * charWidthEng)/2, 88), false, std::string(' ', mCredits[1].length()), color); // TOOD: Force english
                         mCreditLabels[2] = new UILabel(Vector2(center - (mCredits[2].length() * charWidthEng)/2, 88 + lineH), false, std::string(' ', mCredits[2].length()), color); // TOOD: Force english
 
-                        // TODO: !!
-                        //GlobalState::TitleScreenFinish.Labels = mCreditLabels;
+                        for (auto& label : mCreditLabels)
+                        {
+                            GlobalState::TitleScreenFinish.Entities.push_back(label);
+                        }
 
                         // Build list of all (i, j) pairs
                         notVisibleYet.clear();
@@ -190,7 +193,7 @@ namespace AnodyneSharp::States
                             label->visible = false;
                         }
 
-                        //GlobalState::TitleScreenFinish.Darkness = ResourceManager::GetTexture("title_overlay2");
+                        GlobalState::TitleScreenFinish.Darkness = ResourceManager::GetTexture("title_overlay2");
 
                         mNexusImage->Position.Y = 180 - mNexusImage->height;
                         mNexusImage->velocity.Y = 0;
@@ -230,7 +233,7 @@ namespace AnodyneSharp::States
                     .Update([this](AbstractState* state, float t)
                     {
                         GlobalState::pixelation.AddPixelation(15);
-                         //GlobalState::black_overlay.ChangeAlpha(0.36f);
+                        GlobalState::black_overlay.ChangeAlpha(0.36f);
                     })
                     .Condition([this]()
                     {
@@ -254,7 +257,6 @@ namespace AnodyneSharp::States
                     [this](AbstractState* state)
                     {
                         GlobalState::pixelation.SetPixelation(0);
-                        /*
 
                         GlobalState::black_overlay.alpha = 0;
 
@@ -263,7 +265,7 @@ namespace AnodyneSharp::States
 
                         GlobalState::TitleScreenFinish.Entities.clear();
                         GlobalState::TitleScreenFinish.Labels.clear();
-*/
+
                         GlobalState::GameState->SetState<MainMenuState>();
                         
                     })
@@ -307,48 +309,14 @@ namespace AnodyneSharp::States
         mSubtitleOverlay = std::make_unique<UIEntity>(mSubtitle->Position, "title_remake_white", 71, 11, DrawOrder::TEXTBOX);
         mSubtitleOverlay->visible = false;
 
-        // TODO: Not here in CS
-        GlobalState::flash.Flash(2.f, Color::Black);
-
-        // TODO ??
-        // GlobalState::TitleScreenFinish;
-        // GlobalState.TitleScreenFinish.Entities.Add(pressEnter);
+        GlobalState::TitleScreenFinish.Entities.push_back(mPressEnterTex.get());
 
         Sounds::SoundManager::PlaySong("title");
     }
 
     void TitleState::Update()
     {
-       
-        /*
-        if (_pixelating)
-        {
-            GlobalState::pixelation.AddPixelation(15.f);
-            GlobalState::black_overlay.ChangeAlpha(0.54f);
-            if (GlobalState::black_overlay.alpha >= 1.f)
-            {
-                GlobalState::pixelation.SetPixelation(0.f);
-                GlobalState::black_overlay.alpha = 0.f;
-                GlobalState::flash.Deactivate();
-                GlobalState::GameState->SetState<MainMenuState>();
-            }
-            return;
-        }
 
-        if (!GlobalState::flash.Active())
-        {
-            _blinkTimer -= GameTimes::DeltaTime();
-            if (_blinkTimer <= 0.f)
-            {
-                _blinkTimer = 1.f;
-                _pressEnterVisible = !_pressEnterVisible;
-            }
-            if (AnyKeyPressed())
-            {
-                _pixelating = true;
-            }
-        }
-*/
         _state->Update(GameTimes::DeltaTime());
 
         _background.Update();
@@ -374,9 +342,6 @@ namespace AnodyneSharp::States
 
     void TitleState::DrawUI()
     {
-        // float uiZ   = DrawingUtilities::GetDrawingZ(DrawOrder::UI_OBJECTS);
-        // float menuZ = DrawingUtilities::GetDrawingZ(DrawOrder::MENUTEXT);
-
         _background.DrawUI();
 
         mNexusImage->Draw();
@@ -389,17 +354,9 @@ namespace AnodyneSharp::States
         mSubtitle->Draw();
         mSubtitleOverlay->Draw();
 
-        mPressEnterTex->Draw();
-
+        // TODO: Remove this draw call because:
         // The UI labels get drawn in the TitleScreen overlay
-        /*
-        if (_pressEnterVisible && _pressEnterTex && !GlobalState::flash.Active()) {
-            int px = (160 - _pressEnterTex->Width) / 2;
-            Rectangle dst{px, 160, _pressEnterTex->Width, _pressEnterTex->Height};
-            SpriteDrawer::DrawSprite(_pressEnterTex, dst, nullptr, nullptr, 0.f,
-                                     SpriteEffects::None, menuZ);
-        }
-        */
+        mPressEnterTex->Draw();
     }
 
     bool TitleState::AnyKeyPressed() const
