@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <vector>
+#include <functional>
 
 namespace AnodyneSharp::Drawing::Effects {
 
@@ -56,24 +57,21 @@ public:
     void Deactivate() override { _alpha = 0.f; }
     void Load(ContentManager& /*content*/, GraphicsDevice& /*gd*/) override {}
     void Render(SpriteBatch& /*batch*/, Texture2D& /*screen*/) override {}
-    void Update() override {
-        if (_alpha <= 0.f) return;
-        _alpha -= (1.f / _duration) * AnodyneSharp::GameTimes::DeltaTime();
-        if (_alpha < 0.f) _alpha = 0.f;
-    }
-    void Flash(float duration, Color color = Color::White) {
-        _alpha    = 1.f;
-        _duration = duration > 0.f ? duration : 0.1f;
-        _color    = color;
-    }
+    
+    void Update() override;
+    void Flash(float duration, Color color = Color::White, std::function<void()> onFull  = nullptr);
+
     float GetAlpha() const { return _alpha; }
+
     Color GetFlashColor() const {
         return Color{_color.R, _color.G, _color.B, (unsigned char)(_alpha * 255.f)};
     }
 private:
-    float _alpha    = 0.f;
     float _duration = 0.3f;
+    float _alpha    = 0.f;
+    bool _easing   = false;
     Color _color    = Color::White;
+    std::function<void()> _onFull;
 };
 
 // Wave effect

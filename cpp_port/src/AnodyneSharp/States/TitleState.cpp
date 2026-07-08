@@ -175,14 +175,11 @@ namespace AnodyneSharp::States
                 .State("PressStart")
                     .Enter([this](AbstractState* s)
                     {
-                        // TODO: Pass in function
-                        /*
                         GlobalState::flash.Flash(
                             1.5f,
                             Color::White,
                             [this]() { _state->ChangeState("DisplayTitle"); }
-                        );*/
-                        _state->ChangeState("DisplayTitle");
+                        );
                     })
                 .End()
                 .State<PressEnterTimer>("DisplayTitle")
