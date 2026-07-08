@@ -19,7 +19,6 @@ public:
     Color   Tint = Color::White;
 
 private:
-    std::string _texName;
     Texture2D*  _tex     = nullptr;
     Vector2     _velocity;
     DrawOrder   _layer = DrawOrder::BACKGROUND;

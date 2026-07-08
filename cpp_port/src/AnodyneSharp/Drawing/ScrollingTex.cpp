@@ -15,14 +15,15 @@ namespace AnodyneSharp::Drawing
             SDL_Log("ScrollingTex: Texture not found!");
         }
 
-        _texName = texName;
-        Position = velocity;
+        Position = {0, 0};
+        _velocity = velocity;
         _layer = drawOrder;
     }
 
     void ScrollingTex::Draw()
     {
-        Vector2 topleft = Position + SpriteDrawer::Camera_.Position2D();
+        // TODO: Why is cam starting at X: -80 ??
+        Vector2 topleft = Position ;//+ SpriteDrawer::Camera_.Position2D();
         Rectangle pos((int)topleft.X, (int)topleft.Y, _tex->Width, _tex->Height);
         SpriteDrawer::DrawSprite(_tex, pos, DrawingUtilities::GetDrawingZ(_layer, 0));
     }

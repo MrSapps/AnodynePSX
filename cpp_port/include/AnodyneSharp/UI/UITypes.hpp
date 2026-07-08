@@ -9,7 +9,6 @@ namespace AnodyneSharp::UI {
 class UIEntity : public Entities::Entity {
 public:
     float opacity  = 1.f;
-    Vector2 velocity = {0,0};
 
     UIEntity(Vector2 pos, const std::string& textureName, int w, int h,
              Drawing::DrawOrder layer);
