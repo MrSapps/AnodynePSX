@@ -1,5 +1,6 @@
 #pragma once
 #include "AnodyneSharp/Common.hpp"
+#include "DrawingUtilities.hpp"
 
 namespace AnodyneSharp::Drawing {
 
@@ -9,9 +10,9 @@ public:
     ScrollingTex() = default;
 
     // tex: texture name, scroll speed per second in pixels
-    void Load(const std::string& texName, float scrollX, float scrollY);
+    void Load(const std::string& texName, Vector2 velocity, DrawOrder drawOrder);
     void Update();
-    void Draw(float z = 0.5f);
+    void Draw();
 
     bool visible = true;
     Vector2 Position;
@@ -20,11 +21,8 @@ public:
 private:
     std::string _texName;
     Texture2D*  _tex     = nullptr;
-    float       _scrollX = 0.f;
-    float       _scrollY = 0.f;
-    float       _offsetX = 0.f;
-    float       _offsetY = 0.f;
-    int         _w = 0, _h = 0;
+    Vector2     _velocity;
+    DrawOrder   _layer = DrawOrder::BACKGROUND;
 };
 
 } // namespace AnodyneSharp::Drawing

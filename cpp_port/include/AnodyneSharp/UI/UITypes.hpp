@@ -8,7 +8,6 @@ namespace AnodyneSharp::UI {
 // UIEntity - a screen-space entity (not world-space)
 class UIEntity : public Entities::Entity {
 public:
-    bool IsVisible = true;
     float opacity  = 1.f;
     Vector2 velocity = {0,0};
 
@@ -27,7 +26,6 @@ public:
 // UILabel - text label
 class UILabel : public UIEntity {
 public:
-    bool IsVisible = true;
     TextWriter* Writer = nullptr;
 
     UILabel(Vector2 pos, bool drawShadow, const std::string& text,

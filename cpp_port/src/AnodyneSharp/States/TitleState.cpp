@@ -182,6 +182,7 @@ namespace AnodyneSharp::States
                             Color::White,
                             [this]() { _state->ChangeState("DisplayTitle"); }
                         );*/
+                        _state->ChangeState("DisplayTitle");
                     })
                 .End()
                 .State<PressEnterTimer>("DisplayTitle")
@@ -189,45 +190,41 @@ namespace AnodyneSharp::States
                     {
                         for (UILabel* label : mCreditLabels)
                         {
-                            label->IsVisible = false;
+                            label->visible = false;
                         }
 
-                        //GlobalState::TitleScreenFinish.Darkness =
-                        //    ResourceManager::GetTexture("title_overlay2");
+                        //GlobalState::TitleScreenFinish.Darkness = ResourceManager::GetTexture("title_overlay2");
 
                         mNexusImage->Position.Y = 180 - mNexusImage->height;
-                        /*
-                        nexusImage.velocity.Y = 0;
+                        mNexusImage->velocity.Y = 0;
 
-                        doorGlow.Position = { (160 - 64) / 2.0f, nexusImage.Position.Y + 17 };
+                        mDoorGlow->Position = { (160 - 64) / 2.0f, mNexusImage->Position.Y + 17 };
 
-                        Vector2 spinPos = { doorGlow.Position.X, nexusImage.Position.Y };
-                        doorSpin1.Position = spinPos;
-                        doorSpin2.Position = spinPos;
+                        Vector2 spinPos = { mDoorGlow->Position.X, mNexusImage->Position.Y };
+                        mDoorSpin1->Position = spinPos;
+                        mDoorSpin2->Position = spinPos;
+                        mDoorSpin1->angularVelocity = MathHelper::ToRadians(90);
+                        mDoorSpin2->angularVelocity = MathHelper::ToRadians(-90);
 
-                        doorSpin1.angularVelocity = MathHelper::ToRadians(90);
-                        doorSpin2.angularVelocity = MathHelper::ToRadians(-90);
+                        mDoorGlow->visible = true;
+                        mDoorSpin1->visible = true;
+                        mDoorSpin2->visible = true;
 
-                        doorGlow.visible = true;
-                        doorSpin1.visible = true;
-                        doorSpin2.visible = true;
+                        mPressEnterTex->visible = true;
+                        mTitleTex->visible = true;
+                        mTitleOverlay->visible = true;
 
-                        pressEnter.visible = true;
-                        title.visible = true;
-                        titleOverlay.visible = true;
-
-                        subtitle.visible = true;
-                        subtitleOverlay.visible = true;
-                        */
+                        mSubtitle->visible = true;
+                        mSubtitleOverlay->visible = true;
                     })
                     .Update([this](AbstractState* state, float t)
                     {
-                        //MathUtilities::MoveTo(titleOverlay.opacity, 0.0f, 0.4f);
-                        //MathUtilities::MoveTo(subtitleOverlay.opacity, 0.0f, 0.4f);
+                        MathUtilities::MoveTo(mTitleOverlay->opacity, 0.0f, 0.4f);
+                        MathUtilities::MoveTo(mSubtitleOverlay->opacity, 0.0f, 0.4f);
                     })
                     .Event("BlinkEnter", [this](AbstractState* state)
                     {
-                        //mPressEnter->visible = !mPressEnter->visible;
+                        mPressEnterTex->visible = !mPressEnterTex->visible;
                     })
                     .Condition([this]() { return AnyKeyPressed(); },
                             [this](AbstractState* s) { _state->ChangeState("Pixelate"); })
@@ -285,24 +282,33 @@ namespace AnodyneSharp::States
         mCredits[1] = Dialogue::DialogueManager::GetDialogue("misc", "any", "credits", 3);
         mCredits[2] = Dialogue::DialogueManager::GetDialogue("misc", "any", "credits", 4);
 
-        _background.Load("title_bg", 0.f, -30.f);
+        _background.Load("title_bg", Vector2(0.0f, -30.f), AnodyneSharp::Drawing::DrawOrder::BACKGROUND);
 
-        // nexusImage
-        //    mNexusImage = std::make_unique<UIEntity>(Vector2(0, 180), "door", GameConstants::SCREEN_WIDTH_IN_PIXELS, 116, DrawOrder::UI_OBJECTS);
         mNexusImage = std::make_unique<UIEntity>(Vector2(0, -180), "door", GameConstants::SCREEN_WIDTH_IN_PIXELS, 116, DrawOrder::UI_OBJECTS);
 
-        mNexusImage->velocity.Y = 20.0f;
-
         mDoorGlow = std::make_unique<UIEntity>(Vector2(64, 32), "door_glow", 64, 32, new RefLayer(mNexusImage->layer_def_get(), 1));     // TODO: fix leak
+        mDoorGlow->visible = false;
+
         mDoorSpin1 = std::make_unique<UIEntity>(Vector2(0, 0), "door_spinglow1", 64, 64, new RefLayer(mNexusImage->layer_def_get(), 2)); // TODO: fix leak
+        mDoorSpin1->visible = false;
+
         mDoorSpin2 = std::make_unique<UIEntity>(Vector2(0, 0), "door_spinglow2", 64, 64, new RefLayer(mNexusImage->layer_def_get(), 2)); // TODO: fix leak
+        mDoorSpin2->visible = false;
+
         mPressEnterTex = std::make_unique<UIEntity>(Vector2((GameConstants::SCREEN_WIDTH_IN_PIXELS - 96) / 2, GameConstants::SCREEN_HEIGHT_IN_PIXELS), "press_enter", 96, 16, DrawOrder::MENUTEXT);
+        mPressEnterTex->visible = false;
 
         mTitleTex = std::make_unique<UIEntity>(Vector2(0, 0), "title_text", 128, 48, DrawOrder::MENUTEXT);
+        mTitleTex->visible = false;
+
         mTitleOverlay = std::make_unique<UIEntity>(Vector2(0, 0), "title_text_white", 128, 48, DrawOrder::TEXTBOX);
+        mTitleOverlay->visible = false;
 
         mSubtitle = std::make_unique<UIEntity>(Vector2(16), "title_remake", 71, 11, DrawOrder::MENUTEXT);
+        mSubtitle->visible = false;
+
         mSubtitleOverlay = std::make_unique<UIEntity>(Vector2(0, 0), "title_remake_white", 71, 11, DrawOrder::TEXTBOX);
+        mSubtitleOverlay->visible = false;
 
         // TODO: Not here in CS
         GlobalState::flash.Flash(2.f, Color::Black);
@@ -371,11 +377,10 @@ namespace AnodyneSharp::States
 
     void TitleState::DrawUI()
     {
-        float bgZ = DrawingUtilities::GetDrawingZ(DrawOrder::BACKGROUND);
         // float uiZ   = DrawingUtilities::GetDrawingZ(DrawOrder::UI_OBJECTS);
         // float menuZ = DrawingUtilities::GetDrawingZ(DrawOrder::MENUTEXT);
 
-        _background.Draw(bgZ);
+        _background.Draw();
 
         mNexusImage->Draw();
         mDoorGlow->Draw();
@@ -386,6 +391,8 @@ namespace AnodyneSharp::States
 
         mSubtitle->Draw();
         mSubtitleOverlay->Draw();
+
+        mPressEnterTex->Draw();
 
         // The UI labels get drawn in the TitleScreen overlay
         /*

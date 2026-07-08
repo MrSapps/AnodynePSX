@@ -40,6 +40,8 @@ void Game::Run() {
         SDL_Quit(); return;
     }
 
+    SDL_SetWindowTitle(SDL3Context::Window, "Anodyne Blunt"); // V Funny joke
+
     // Create hardware-accelerated renderer
     SDL3Context::Renderer = SDL_CreateRenderer(SDL3Context::Window, nullptr);
     if (!SDL3Context::Renderer) {
@@ -292,9 +294,12 @@ static bool ClipSrcDst(SDL_FRect& src, SDL_FRect& dst,
 
 void SpriteBatch::End() {
     if (!_renderer) { _calls.clear(); return; }
+    
+    /*
     static int _batchN = 0; ++_batchN;
     if (_batchN <= 20 || _batchN % 120 == 0)
         SDL_Log("Batch::End #%d  calls=%zu", _batchN, _calls.size());
+    */
 
     // Sort: higher Z = further back (XNA BackToFront: Z=1 is back, Z=0 is front)
     // Draw back to front = sort descending by Z

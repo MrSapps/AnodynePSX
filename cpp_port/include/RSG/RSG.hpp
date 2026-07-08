@@ -8,6 +8,7 @@
 #include <vector>
 #include <memory>
 #include <stdexcept>
+#include <SDL3/SDL.h>
 
 namespace RSG {
 
@@ -98,6 +99,8 @@ public:
         if (it == _states.end()) {
             throw std::runtime_error("State not found: " + stateName);
         }
+
+        SDL_Log("StateMachine: Changing state from %s to %s", _currentStateName.c_str(), stateName.c_str());
         _currentStateName = stateName;
         _currentState = &it->second;
 

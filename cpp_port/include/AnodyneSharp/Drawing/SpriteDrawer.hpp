@@ -32,6 +32,10 @@ public:
                            float rotation = 0.f,
                            SpriteEffects flip = SpriteEffects::None,
                            float Z = 0.f);
+
+    static void DrawSprite(Texture2D* texture, const Rectangle& rect,
+                           float Z);
+
     static void DrawSprite(Texture2D* texture, const Vector2& pos,
                            const Rectangle* sRect = nullptr,
                            const Color* color = nullptr,

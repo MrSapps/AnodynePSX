@@ -144,23 +144,23 @@ void PlayState::SetBackground()
 
     if (GlobalState::CURRENT_MAP_NAME == "BLANK")
     {
-        _background.Load("BLANK_BG", -20.0f, 0.0f);
+        _background.Load("BLANK_BG", Vector2(-20.0f, 0.0f), DrawOrder::BACKGROUND);
     }
     else if (GlobalState::CURRENT_MAP_NAME == "SPACE")
     {
-        _background.Load("SPACE_BG", -15.0f, 0.0f);
+        _background.Load("SPACE_BG", Vector2(-15.0f, 0.0f), DrawOrder::BACKGROUND);
     }
     else if (GlobalState::CURRENT_MAP_NAME == "GO")
     {
-        _background.Load("briar_BG", 0.0f, 15.0f);
+        _background.Load("briar_BG", Vector2(0.0f, 15.0f), DrawOrder::BACKGROUND);
     }
     else if (GlobalState::CURRENT_MAP_NAME == "NEXUS")
     {
-        _background.Load("nexus_bg", 0.0f, 15.0f);
+        _background.Load("nexus_bg", Vector2(0.0f, 15.0f), DrawOrder::BACKGROUND);
     }
     else if (GlobalState::CURRENT_MAP_NAME == "BOSSRUSH")
     {
-        _background.Load("briar_BG", 0.0f, 15.0f);
+        _background.Load("briar_BG", Vector2(0.0f, 15.0f), DrawOrder::BACKGROUND);
     }
     else
     {
@@ -451,7 +451,7 @@ void PlayState::QuickLoad() {
 }
 
 void PlayState::Draw() {
-    _background.Draw(10.0f);
+    _background.Draw();
 
     if (_map) _map->Draw(SpriteDrawer::Camera_.Bounds());
     for (auto& e : _entities) if (e->exists) e->Draw();
@@ -615,7 +615,7 @@ CreditsState::CreditsState() {
 
     std::string endText = Dialogue::DialogueManager::GetDialogue("misc", "any", "ending", 29);
     _endLabel = std::make_unique<UILabel>(Vector2{0.f, 0.f}, false, endText);
-    _endLabel->IsVisible = false;
+    _endLabel->visible = false;
 }
 
 void CreditsState::Update() {
@@ -641,16 +641,16 @@ void CreditsState::Update() {
     } else {
         // Scrolling done — show end label and wait for Accept
         if (_endLabel) {
-            _endLabel->IsVisible = true;
-            if (!_labels.empty()) _labels.back()->IsVisible = false;
+            _endLabel->visible = true;
+            if (!_labels.empty()) _labels.back()->visible = false;
         }
         _waitingAccept = true;
     }
 }
 
 void CreditsState::DrawUI() {
-    for (auto& l : _labels) if (l && l->IsVisible) l->Draw();
-    if (_endLabel && _endLabel->IsVisible) _endLabel->Draw();
+    for (auto& l : _labels) if (l && l->visible) l->Draw();
+    if (_endLabel && _endLabel->visible) _endLabel->Draw();
 }
 
 // ---- IntroState ----
@@ -722,9 +722,9 @@ FileSubstate::FileSubstate(int saveId) : _saveId(saveId) {
         Dialogue::DialogueManager::GetDialogue("misc","any","checkpoint",2)));  // No
 
     // Hide confirm labels initially
-    if (_labels.size() > 2) _labels[2]->IsVisible = false;
-    if (_labels.size() > 3) _labels[3]->IsVisible = false;
-    if (!_saveExists && _labels.size() > 1) _labels[1]->IsVisible = false;
+    if (_labels.size() > 2) _labels[2]->visible = false;
+    if (_labels.size() > 3) _labels[3]->visible = false;
+    if (!_saveExists && _labels.size() > 1) _labels[1]->visible = false;
 }
 
 void FileSubstate::GetControl() {
@@ -777,10 +777,10 @@ void FileSubstate::HandleInput() {
             // Show confirmation
             _confirming = true;
             _fstate = FSState::NoConfirm;
-            if (_labels[0]) _labels[0]->IsVisible = false;
-            if (_labels[1]) _labels[1]->IsVisible = false;
-            if (_labels.size() > 2) _labels[2]->IsVisible = true;
-            if (_labels.size() > 3) _labels[3]->IsVisible = true;
+            if (_labels[0]) _labels[0]->visible = false;
+            if (_labels[1]) _labels[1]->visible = false;
+            if (_labels.size() > 2) _labels[2]->visible = true;
+            if (_labels.size() > 3) _labels[3]->visible = true;
         } else if (KeyInput::JustPressedRebindableKey(KeyFunctions::Up)) {
             _fstate = FSState::Game;
         } else {
@@ -794,10 +794,10 @@ void FileSubstate::HandleInput() {
             // Cancel new-game confirmation → back to menu
             _confirming = false;
             _fstate = FSState::NewGame;
-            if (_labels[0]) _labels[0]->IsVisible = true;
-            if (_labels[1]) _labels[1]->IsVisible = true;
-            if (_labels.size() > 2) _labels[2]->IsVisible = false;
-            if (_labels.size() > 3) _labels[3]->IsVisible = false;
+            if (_labels[0]) _labels[0]->visible = true;
+            if (_labels[1]) _labels[1]->visible = true;
+            if (_labels.size() > 2) _labels[2]->visible = false;
+            if (_labels.size() > 3) _labels[3]->visible = false;
         } else if (KeyInput::JustPressedRebindableKey(KeyFunctions::Left)) {
             _fstate = FSState::YesConfirm;
         }
@@ -809,10 +809,10 @@ void FileSubstate::HandleInput() {
         } else if (KeyInput::JustPressedRebindableKey(KeyFunctions::Cancel)) {
             _fstate = FSState::Game;
             _confirming = false;
-            if (_labels[0]) _labels[0]->IsVisible = true;
-            if (_labels[1]) _labels[1]->IsVisible = true;
-            if (_labels.size() > 2) _labels[2]->IsVisible = false;
-            if (_labels.size() > 3) _labels[3]->IsVisible = false;
+            if (_labels[0]) _labels[0]->visible = true;
+            if (_labels[1]) _labels[1]->visible = true;
+            if (_labels.size() > 2) _labels[2]->visible = false;
+            if (_labels.size() > 3) _labels[3]->visible = false;
         } else if (KeyInput::JustPressedRebindableKey(KeyFunctions::Right)) {
             _fstate = FSState::NoConfirm;
         }
@@ -821,7 +821,7 @@ void FileSubstate::HandleInput() {
 }
 
 void FileSubstate::DrawUI() {
-    for (auto& l : _labels) if (l && l->IsVisible) l->Draw();
+    for (auto& l : _labels) if (l && l->visible) l->Draw();
     Substate::DrawUI();
 }
 
@@ -1094,7 +1094,7 @@ MapSubstate::MapSubstate() {
     _returnLabel = std::make_unique<UILabel>(
         Vector2{x, y - (float)Registry::GameConstants::FONT_LINE_HEIGHT() * 2.f},
         true, DM::GetDialogue("misc","any","map", isDungeon ? 5 : 4));
-    _returnLabel->IsVisible = Registry::GlobalState::ReturnTarget.has_value();
+    _returnLabel->visible = Registry::GlobalState::ReturnTarget.has_value();
 
     y += 4.f;
     _yesLabel = std::make_unique<UILabel>(Vector2{x,        y}, true, DM::GetDialogue("misc","any","checkpoint",1));

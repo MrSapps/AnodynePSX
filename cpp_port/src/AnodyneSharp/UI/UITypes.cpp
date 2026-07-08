@@ -30,7 +30,7 @@ UILabel::UILabel(Vector2 pos, bool drawShadow, const std::string& text,
                  Color color, Drawing::DrawOrder layer, bool centerText)
     : UIEntity(pos, "font-white-apple-7x8", 7, 8, layer), _text(text)
 {
-    IsVisible = true; // always visible; matches C# UILabel where 2nd arg is drawShadow
+    visible = true; // always visible; matches C# UILabel where 2nd arg is drawShadow
     _ownedFont = std::make_unique<Font::SpriteFont>(Font::FontManager::InitFont(color));
     _ownedWriter = TextWriter{(int)pos.X, (int)pos.Y, 200, 200};
     _ownedWriter.SetSpriteFont(_ownedFont.get(), nullptr);
@@ -43,7 +43,7 @@ UILabel::UILabel(Vector2 pos, bool drawShadow, const std::string& text,
 }
 
 void UILabel::Draw() {
-    if (!IsVisible) return;
+    if (!visible) return;
     static int _lc = 0;
     if (++_lc <= 5) {
         SDL_Log("UILabel::Draw text='%s' hasFnt=%d fntTex=%p lines=%d",

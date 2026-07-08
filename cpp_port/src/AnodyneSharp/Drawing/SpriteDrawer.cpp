@@ -146,10 +146,13 @@ void SpriteDrawer::Render(Effect* /*effect*/) {
     if (!renderer) return;
     auto* offscreen = SDL3Context::OffscreenTarget;
     auto* effectTex = SDL3Context::EffectTexture;
+
+    /*
     static int _rc = 0; ++_rc;
     if (_rc <= 5 || _rc % 60 == 0)
         SDL_Log("Render #%d flash=%.2f offscreen=%p",
             _rc, AnodyneSharp::Registry::GlobalState::flash.GetAlpha(), (void*)offscreen);
+    */
 
     using GS = AnodyneSharp::Registry::GlobalState;
 
@@ -230,6 +233,7 @@ void SpriteDrawer::Render(Effect* /*effect*/) {
 
     // --- 4. Switch render target to screen ---
     // DEBUG: probe center pixel of offscreen to see if content was drawn
+    /*
     {
         static int _probe = 0;
         if (++_probe <= 5 || _probe % 120 == 0) {
@@ -245,7 +249,8 @@ void SpriteDrawer::Render(Effect* /*effect*/) {
                 }
             }
         }
-    }
+    }*/
+
     SDL_SetRenderTarget(renderer, nullptr);
 
     // --- 5. Blit processed or raw offscreen to screen ---
@@ -287,6 +292,12 @@ void SpriteDrawer::DrawSprite(Texture2D* texture, const Rectangle& rect,
     Color tint = color ? *color : Color::White;
     Rectangle dst{rect.X - (int)_camOffset.X, rect.Y - (int)_camOffset.Y, rect.Width, rect.Height};
     _spriteBatch->Draw(texture, dst, sRect, tint, rotation, Vector2{}, flip, Z);
+}
+
+void SpriteDrawer::DrawSprite(Texture2D* texture, const Rectangle& rect,
+                           float Z)
+{
+    DrawSprite(texture, rect, nullptr, nullptr, 0.f, SpriteEffects::None, Z);
 }
 
 void SpriteDrawer::DrawSprite(Texture2D* texture, const Vector2& pos,
