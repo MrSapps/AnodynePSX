@@ -229,13 +229,12 @@ namespace AnodyneSharp::States
                 .State("Pixelate")
                     .Update([this](AbstractState* state, float t)
                     {
-                        //GlobalState::pixelation.AddPixelation(15);
+                        GlobalState::pixelation.AddPixelation(15);
                          //GlobalState::black_overlay.ChangeAlpha(0.36f);
                     })
                     .Condition([this]()
                     {
-                        return false; // TODO: fix this condition
-                        //return GlobalState::pixelation.Pixelation >= 15.0f;
+                        return GlobalState::pixelation.GetPixelSize() >= 15.0f;
                     },
                     [this](AbstractState* state)
                     {
@@ -254,8 +253,9 @@ namespace AnodyneSharp::States
                     },
                     [this](AbstractState* state)
                     {
-                        /*
                         GlobalState::pixelation.SetPixelation(0);
+                        /*
+
                         GlobalState::black_overlay.alpha = 0;
 
                         GlobalState::flash.ForceAlpha(0);
@@ -263,9 +263,9 @@ namespace AnodyneSharp::States
 
                         GlobalState::TitleScreenFinish.Entities.clear();
                         GlobalState::TitleScreenFinish.Labels.clear();
-
-                        GlobalState::GameState.SetState<MainMenuState>();
-                        */
+*/
+                        GlobalState::GameState->SetState<MainMenuState>();
+                        
                     })
                 .End()
                 .Build();
