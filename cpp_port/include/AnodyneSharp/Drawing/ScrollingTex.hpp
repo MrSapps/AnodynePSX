@@ -12,6 +12,7 @@ public:
     // tex: texture name, scroll speed per second in pixels
     void Load(const std::string& texName, Vector2 velocity, DrawOrder drawOrder);
     void Update();
+    void DrawUI();
     void Draw();
 
     bool visible = true;

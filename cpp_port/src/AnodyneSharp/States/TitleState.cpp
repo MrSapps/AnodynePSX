@@ -380,7 +380,7 @@ namespace AnodyneSharp::States
         // float uiZ   = DrawingUtilities::GetDrawingZ(DrawOrder::UI_OBJECTS);
         // float menuZ = DrawingUtilities::GetDrawingZ(DrawOrder::MENUTEXT);
 
-        _background.Draw();
+        _background.DrawUI();
 
         mNexusImage->Draw();
         mDoorGlow->Draw();

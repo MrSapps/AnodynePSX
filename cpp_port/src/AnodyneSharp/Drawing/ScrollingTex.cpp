@@ -20,10 +20,16 @@ namespace AnodyneSharp::Drawing
         _layer = drawOrder;
     }
 
+    void ScrollingTex::DrawUI()
+    {
+        Vector2 topleft = Position;
+        Rectangle pos((int)topleft.X, (int)topleft.Y, _tex->Width, _tex->Height);
+        SpriteDrawer::DrawSprite(_tex, pos, DrawingUtilities::GetDrawingZ(_layer, 0));
+    }
+
     void ScrollingTex::Draw()
     {
-        // TODO: Why is cam starting at X: -80 ??
-        Vector2 topleft = Position ;//+ SpriteDrawer::Camera_.Position2D();
+        Vector2 topleft = Position + SpriteDrawer::Camera_.Position2D();
         Rectangle pos((int)topleft.X, (int)topleft.Y, _tex->Width, _tex->Height);
         SpriteDrawer::DrawSprite(_tex, pos, DrawingUtilities::GetDrawingZ(_layer, 0));
     }
