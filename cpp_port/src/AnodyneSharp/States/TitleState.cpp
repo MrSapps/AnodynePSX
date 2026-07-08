@@ -298,16 +298,16 @@ namespace AnodyneSharp::States
         mPressEnterTex = std::make_unique<UIEntity>(Vector2((GameConstants::SCREEN_WIDTH_IN_PIXELS - 96) / 2, GameConstants::SCREEN_HEIGHT_IN_PIXELS), "press_enter", 96, 16, DrawOrder::MENUTEXT);
         mPressEnterTex->visible = false;
 
-        mTitleTex = std::make_unique<UIEntity>(Vector2(0, 0), "title_text", 128, 48, DrawOrder::MENUTEXT);
+        mTitleTex = std::make_unique<UIEntity>(Vector2(16, 16), "title_text", 128, 48, DrawOrder::MENUTEXT);
         mTitleTex->visible = false;
 
-        mTitleOverlay = std::make_unique<UIEntity>(Vector2(0, 0), "title_text_white", 128, 48, DrawOrder::TEXTBOX);
+        mTitleOverlay = std::make_unique<UIEntity>(Vector2(16, 16), "title_text_white", 128, 48, DrawOrder::TEXTBOX);
         mTitleOverlay->visible = false;
 
-        mSubtitle = std::make_unique<UIEntity>(Vector2(16), "title_remake", 71, 11, DrawOrder::MENUTEXT);
+        mSubtitle = std::make_unique<UIEntity>(Vector2(45, 47), "title_remake", 71, 11, DrawOrder::MENUTEXT);
         mSubtitle->visible = false;
 
-        mSubtitleOverlay = std::make_unique<UIEntity>(Vector2(0, 0), "title_remake_white", 71, 11, DrawOrder::TEXTBOX);
+        mSubtitleOverlay = std::make_unique<UIEntity>(mSubtitle->Position, "title_remake_white", 71, 11, DrawOrder::TEXTBOX);
         mSubtitleOverlay->visible = false;
 
         // TODO: Not here in CS
