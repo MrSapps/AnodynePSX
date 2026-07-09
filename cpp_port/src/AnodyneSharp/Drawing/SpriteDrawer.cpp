@@ -133,13 +133,25 @@ void SpriteDrawer::BeginDraw() {
     if (_spriteBatch) _spriteBatch->Begin();
 }
 void SpriteDrawer::EndDraw() {
-    if (_spriteBatch) _spriteBatch->End();
+    
+    if (_spriteBatch) 
+    {
+        _spriteBatch->End();
+    }
+
+    
+
 }
+
 void SpriteDrawer::BeginGUIDraw() {
     _camOffset = {0.f, 0.f};
     if (_spriteBatch) _spriteBatch->Begin();
 }
-void SpriteDrawer::EndGUIDraw()   { if (_spriteBatch) _spriteBatch->End(); }
+
+void SpriteDrawer::EndGUIDraw()   
+{
+     if (_spriteBatch) _spriteBatch->End(); 
+}
 
 void SpriteDrawer::Render(Effect* /*effect*/) {
     auto* renderer  = SDL3Context::Renderer;

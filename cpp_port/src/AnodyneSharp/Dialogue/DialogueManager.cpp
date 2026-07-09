@@ -138,7 +138,12 @@ DialogueScene* DialogueManager::GetScenePtr(const std::string& npc,
 std::string DialogueManager::GetDialogue(const std::string& npc, const std::string& area,
                                           const std::string& scene, int id) {
     auto* s = GetScenePtr(npc, area, scene);
-    if (!s) return "No text available.";
+    if (!s) 
+    {
+        SDL_Log("DialogueManager::GetDialogue: scene not found for npc='%s', area='%s', scene='%s'", npc.c_str(), area.c_str(), scene.c_str());
+        return "No text available.";
+    }
+    
     Registry::GlobalState::DialogueTop = s->AlignTop;
     return ReplaceKeys(s->GetDialogue(id));
 }

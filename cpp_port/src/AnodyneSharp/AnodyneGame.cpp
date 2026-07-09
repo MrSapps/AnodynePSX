@@ -104,6 +104,7 @@ void AnodyneGame::Draw(const GameTime& gameTime) {
         Drawing::SpriteDrawer::_camOffset.X += GlobalState::screenShake.Offset.X * 160.f;
         Drawing::SpriteDrawer::_camOffset.Y += GlobalState::screenShake.Offset.Y * 180.f;
     }
+
     if (CurrentState) CurrentState->Draw();
     Drawing::SpriteDrawer::EndDraw();
 

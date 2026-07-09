@@ -277,9 +277,9 @@ namespace AnodyneSharp::States
 
     void TitleState::Create()
     {
-        mCredits[0] = Dialogue::DialogueManager::GetDialogue("misc", "any", "credits", 2);
-        mCredits[1] = Dialogue::DialogueManager::GetDialogue("misc", "any", "credits", 3);
-        mCredits[2] = Dialogue::DialogueManager::GetDialogue("misc", "any", "credits", 4);
+        mCredits[0] = Dialogue::DialogueManager::GetDialogue("misc", "any", "title", 2);
+        mCredits[1] = Dialogue::DialogueManager::GetDialogue("misc", "any", "title", 3);
+        mCredits[2] = Dialogue::DialogueManager::GetDialogue("misc", "any", "title", 4);
 
         _background.Load("title_bg", Vector2(0.0f, -30.f), AnodyneSharp::Drawing::DrawOrder::BACKGROUND);
 
@@ -354,9 +354,7 @@ namespace AnodyneSharp::States
         mSubtitle->Draw();
         mSubtitleOverlay->Draw();
 
-        // TODO: Remove this draw call because:
-        // The UI labels get drawn in the TitleScreen overlay
-        mPressEnterTex->Draw();
+        GlobalState::TitleScreenFinish.Render();
     }
 
     bool TitleState::AnyKeyPressed() const

@@ -210,7 +210,10 @@ public:
     void Deactivate() override { _active = false; }
     void Load(ContentManager& content, GraphicsDevice& gd) override {}
     void Render(SpriteBatch& batch, Texture2D& screen) override {}
-    void Update() override {}
+    void Render();
+
+    void Update() override;
+
     void Activate() { _active = true; }
     Texture2D* Darkness = nullptr;  // set by TitleState
     std::vector<AnodyneSharp::UI::UIEntity*> Entities;  // set by TitleState
@@ -218,11 +221,12 @@ public:
 
     void ForceAlpha(float a)
     {
-        // TODO
+        _alpha = a;        
     }
 
 private:
-    bool _active = false;
+    float _alpha = 0.0f;
+    bool _active = true;
 };
 
 // Glitch effect
