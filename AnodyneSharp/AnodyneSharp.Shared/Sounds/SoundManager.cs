@@ -28,6 +28,9 @@ namespace AnodyneSharp.Sounds
         private static SongPlayer ambience = new();
         private static float ambienceVolume = 1f;
 
+        // Track active SFX by remaining game-time seconds
+        private static Dictionary<SoundEffectInstance, float> _activeSfx = new();
+
         static SoundManager()
         {
             CurrentSongName = "";
@@ -107,26 +110,67 @@ namespace AnodyneSharp.Sounds
 
         public static SoundEffectInstance PlaySoundEffect(params string[] names)
         {
-            var sfx = names.Select((n) => ResourceManager.GetSFX(n)).Where((n) => n != null).ToArray();
-            if (sfx.Length == 0) return null;
+            var availableNames = names.Where(n => ResourceManager.GetSFXDuration(n) > 0f).ToArray();
+            if (availableNames.Length == 0) return null;
 
-            return CreateSoundInstance(sfx[GlobalState.RNG.Next(0,sfx.Length)]);
+            string chosen = availableNames[GlobalState.RNG.Next(0, availableNames.Length)];
+            var inst = ResourceManager.GetSFX(chosen);
+            float dur = ResourceManager.GetSFXDuration(chosen);
+            return CreateSoundInstance(inst, 1f, 0f, dur);
         }
 
         public static void PlayPitchedSoundEffect(string name, float pitch, float volume = 1)
         {
-            CreateSoundInstance(ResourceManager.GetSFX(name), volume, pitch);
+            float dur = ResourceManager.GetSFXDuration(name);
+            CreateSoundInstance(ResourceManager.GetSFX(name), volume, pitch, dur);
         }
 
-        private static SoundEffectInstance CreateSoundInstance(SoundEffectInstance sfx, float volume = 1, float pitch = 0)
+        private static SoundEffectInstance CreateSoundInstance(SoundEffectInstance sfx, float volume = 1, float pitch = 0, float durationSeconds = 0)
         {
             if (sfx != null)
             {
                 sfx.Pitch = pitch;
                 sfx.Volume = volume * GlobalState.settings.sfx_volume_scale;
                 sfx.Play();
+
+                if (durationSeconds > 0f)
+                {
+                    _activeSfx[sfx] = durationSeconds;
+                }
             }
             return sfx;
+        }
+
+        // Update should be called once per frame (after GameTimes.UpdateTimes) to decrement tracked SFX timers.
+        public static void Update()
+        {
+            if (_activeSfx.Count == 0) return;
+            var toRemove = new List<SoundEffectInstance>();
+            float dt = GameTimes.DeltaTime;
+            foreach (var kv in _activeSfx)
+            {
+                float rem = kv.Value - dt;
+                if (rem <= 0f)
+                {
+                    toRemove.Add(kv.Key);
+                }
+                else
+                {
+                    _activeSfx[kv.Key] = rem;
+                }
+            }
+            foreach (var k in toRemove) _activeSfx.Remove(k);
+        }
+
+        // Query whether an instance is playing according to game time tracking. Falls back to actual SoundState if not tracked.
+        public static bool IsPlaying(SoundEffectInstance sfx)
+        {
+            if (sfx == null) return false;
+            if (_activeSfx.TryGetValue(sfx, out float rem))
+            {
+                return rem > 0f;
+            }
+            return sfx.State == SoundState.Playing;
         }
     }
 }

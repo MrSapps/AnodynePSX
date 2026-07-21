@@ -37,6 +37,7 @@ namespace AnodyneSharp.Drawing.Effects
             blend.Parameters["DepthCutoff"].SetValue(cutoff);
             blend.Parameters["Projection"].SetValue(SpriteDrawer.Projection(screen.Bounds.Size));
             batch.Begin(samplerState: SamplerState.PointClamp, effect: blend);
+            // not intro
             batch.Draw(screen, screen.Bounds, Color.White);
             batch.End();
         }

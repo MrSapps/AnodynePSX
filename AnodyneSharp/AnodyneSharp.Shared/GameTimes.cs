@@ -8,7 +8,8 @@ namespace AnodyneSharp
     {
         public static float FPS { get; private set; }
         public static float TimeScale { get; set; }
-        public static float TrueDeltaTime { get; private set; }
+        public const float FIXED_DELTA_TIME = 1f / 60f; // Fixed 60 FPS delta time
+        public static float TrueDeltaTime { get; private set; } = FIXED_DELTA_TIME;
 
         public static float DeltaTime
         {
@@ -30,7 +31,7 @@ namespace AnodyneSharp
 
         public static void UpdateTimes(GameTime gameTime)
         {
-            TrueDeltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            TrueDeltaTime = FIXED_DELTA_TIME;
         }
 
         public static void UpdateFPS(GameTime gameTime)

@@ -44,7 +44,7 @@ namespace AnodyneSharp.Entities.Interactive.Npc.Happy
             Sounds.SoundManager.StopSong();
             var sound = Sounds.SoundManager.PlaySoundEffect("red_cave_rise");
             GlobalState.Dialogue = Dialogue.DialogueManager.GetDialogue("happy_npc", "briar");
-            while(!GlobalState.LastDialogueFinished || sound.State == Microsoft.Xna.Framework.Audio.SoundState.Playing)
+            while(!GlobalState.LastDialogueFinished || Sounds.SoundManager.IsPlaying(sound))
             {
                 GlobalState.screenShake.Shake(0.02f, 0.1f);
                 _p.dontMove = true;

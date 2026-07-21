@@ -6,6 +6,7 @@ using AnodyneSharp.Entities;
 using AnodyneSharp.Entities.Gadget;
 using AnodyneSharp.Input;
 using AnodyneSharp.Modding;
+using AnodyneSharp.Recording;
 using AnodyneSharp.Registry;
 using AnodyneSharp.Resources;
 using AnodyneSharp.Resources.Loading;
@@ -137,12 +138,38 @@ namespace AnodyneSharp
             base.Update(gameTime);
 
             GameTimes.UpdateTimes(gameTime);
-            KeyInput.Update();
+            Sounds.SoundManager.Update();
+            bool isPlayback = RecordingManager.Mode == RecordingManager.RecordingMode.Playback ||
+                RecordingManager.Mode == RecordingManager.RecordingMode.Verification;
 
+
+            RecordingManager.FrameUpdate();
+            if (isPlayback)
+            {
+                RecordingManager.ReadInputToInject();
+                KeyInput.KeyState = RecordingManager.CurrentInput;
+            }
+            else
+            {
+                if (RecordingManager.Mode == RecordingManager.RecordingMode.Recording)
+                {
+                    RecordingManager.CurrentInput = KeyInput.KeyState;
+                    RecordingManager.SaveHardwareInputs();
+                    KeyInput.Update(isRecording : true);
+                }
+                else
+                {
+                    KeyInput.Update(isRecording : false);
+                }
+            }
+
+ 
+/*
             if (GlobalState.settings.pause_on_unfocus && !IsActive)
             {
                 return;
             }
+*/
 
             CurrentState.Update();
 

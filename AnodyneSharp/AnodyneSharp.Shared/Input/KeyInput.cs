@@ -30,7 +30,7 @@ namespace AnodyneSharp.Input
     /// </summary>
     public static class KeyInput
     {
-        private enum InputState
+        public enum InputState
         {
             NONE,
             HELD,
@@ -67,7 +67,7 @@ namespace AnodyneSharp.Input
 
         public static bool FaceButtonsSwitched { get; private set; }
 
-        private static Dictionary<Keys, InputState> KeyState;
+        public static Dictionary<Keys, InputState> KeyState;
         private static Dictionary<Buttons, InputState>[] ControllerState;
 
         static KeyInput()
@@ -83,37 +83,40 @@ namespace AnodyneSharp.Input
             }
         }
 
+
         /// <summary>
         /// Updates the internal key states.
         /// </summary>
-        public static void Update()
+        public static void Update(bool isRecording)
         {
             ControllerModeChanged = false;
 
-            KeyboardState s = Keyboard.GetState();
-
+            var CurrentKeyboardState = Keyboard.GetState();
             foreach (Keys key in Enum.GetValues(typeof(Keys)))
             {
-                bool isDown = s.IsKeyDown(key);
-                KeyState[key] = UpdateInput(KeyState[key], s.IsKeyDown(key));
+                bool isDown = CurrentKeyboardState.IsKeyDown(key);
+                KeyState[key] = UpdateInput(KeyState[key], CurrentKeyboardState.IsKeyDown(key));
 
-                if (ControllerMode)
+                if (!isRecording && ControllerMode)
                 {
                     ControllerMode = !isDown;
                     ControllerModeChanged = true;
                 }
             }
 
+            if (isRecording)
+            {
+                return;
+            }
+
+            var CurrentControllerStates = new GamePadState[4];
             for (int i = 0; i < ControllerState.Length; i++)
             {
-                GamePadState g = GamePad.GetState(i);
-
-                var dic = ControllerState[i];
-
+                CurrentControllerStates[i] = GamePad.GetState(i);
                 foreach (Buttons button in Enum.GetValues(typeof(Buttons)))
                 {
-                    bool isDown = g.IsButtonDown(button);
-                    dic[button] = UpdateInput(dic[button], isDown);
+                    bool isDown = CurrentControllerStates[i].IsButtonDown(button);
+                    ControllerState[i][button] = UpdateInput(ControllerState[i][button], isDown);
 
                     if (!ControllerMode)
                     {

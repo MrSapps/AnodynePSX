@@ -127,6 +127,15 @@ namespace AnodyneSharp.Resources
             return _sfx[sfxName].Get();
         }
 
+        public static float GetSFXDuration(string sfxName)
+        {
+            if (!_sfx.ContainsKey(sfxName))
+            {
+                return 0f;
+            }
+            return _sfx[sfxName].DurationSeconds;
+        }
+
         public static Dictionary<string, SFXLimiter> GetSFX()
         {
 
