@@ -1,0 +1,19 @@
+name: Anodyne C/C++ CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: build code
+      run: cd src && mkdir build && cd build && "cmake .."" && make
+    - name: make
+      run: make
