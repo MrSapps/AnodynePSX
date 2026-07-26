@@ -11,6 +11,7 @@
 
 #define nullptr NULL
 
+
 int main(int argc, char* args[])
 {
     // SDL initialisation

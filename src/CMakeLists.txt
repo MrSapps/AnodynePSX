@@ -7,3 +7,6 @@ include_directories(${SDL2_INCLUDE_DIR})
 
 add_executable(Anodyne main.c)
 target_link_libraries(Anodyne ${SDL2_LIBRARIES})
+
+add_executable(CompileContent content_compiler/main.cpp)
+set_property(TARGET CompileContent PROPERTY CXX_STANDARD 17)
