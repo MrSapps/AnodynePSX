@@ -5,7 +5,7 @@ find_package(SDL2 REQUIRED)
 
 include_directories(${SDL2_INCLUDE_DIR})
 
-add_executable(Anodyne main.c)
+add_executable(Anodyne main.c dialog_manager.c)
 target_link_libraries(Anodyne ${SDL2_LIBRARIES})
 
 add_executable(CompileContent content_compiler/main.cpp)

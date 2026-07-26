@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+#include "dialog_manager.h"
+
 // Window size
 #define WINDOW_WIDTH 640
 #define WINDOW_HEIGHT 480
@@ -12,9 +14,21 @@
 
 #define nullptr NULL
 
+static void dialog_manager_test()
+{
+    struct dialog_manager dm;
+    struct binary_blob data;
+    dialog_manager_init(&dm, &data);
+
+    dialog_manager_random(&dm, npc_id_empty1, scene_id_empty3);
+
+    dialog_manager_free(&dm);
+}
 
 int main(int argc, char* args[])
 {
+    dialog_manager_test();
+
     // SDL initialisation
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
