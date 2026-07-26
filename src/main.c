@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 // Window size
 #define WINDOW_WIDTH 640
