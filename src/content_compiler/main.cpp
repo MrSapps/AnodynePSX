@@ -269,11 +269,11 @@ int main(int argc, char **argv)
     if (dc.Compile("../../old/Content/Dialogue", "EN"))
     {
         printf("Dialog compiled %d scenes\n", dc.newSceneTree.size());
-        for (auto& [sceneName, sceneDialogNpc] : dc.newSceneTree)
+        for (auto& [npcName, sceneDialogNpc] : dc.newSceneTree)
         {
-            for (auto& [npcName, area] : sceneDialogNpc._areas)
+            for (auto& [areaName, area] : sceneDialogNpc._areas)
             {
-                for (auto& [areaName, sceneDialog] : area._scenes)
+                for (auto& [sceneName, sceneDialog] : area._scenes)
                 {
                     printf("scene name [%s] npc name [%s] area name [%s] lines [%d]\n", sceneName.c_str(), npcName.c_str(), areaName.c_str(), sceneDialog._lines.size());
                     if (!sceneDialog._lines.empty())
