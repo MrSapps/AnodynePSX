@@ -7,7 +7,34 @@
 
 namespace string
 {
-    bool startsWith(const std::string& str, const std::string& startsWithStr)
+    std::vector<std::string> split(const std::string &str, const std::string &delimiter)
+    {
+        std::vector<std::string> result;
+
+        if (delimiter.empty())
+        {
+            result.push_back(str);
+            return result;
+        }
+
+        std::size_t start = 0;
+        while (true)
+        {
+            std::size_t pos = str.find(delimiter, start);
+            if (pos == std::string::npos)
+            {
+                result.push_back(str.substr(start));
+                break;
+            }
+
+            result.push_back(str.substr(start, pos - start));
+            start = pos + delimiter.size();
+        }
+
+        return result;
+    }
+
+    bool startsWith(const std::string &str, const std::string &startsWithStr)
     {
         if (startsWithStr.size() > str.size())
             return false;
@@ -15,11 +42,10 @@ namespace string
         return std::equal(
             startsWithStr.begin(),
             startsWithStr.end(),
-            str.begin()
-        );
+            str.begin());
     }
 
-    bool IsEmptyOrWhiteSpace(const std::string& str)
+    bool IsEmptyOrWhiteSpace(const std::string &str)
     {
         if (str.empty())
         {
@@ -29,23 +55,29 @@ namespace string
         for (std::string::size_type i = 0; i < str.size(); ++i)
         {
             if (!std::isspace(static_cast<unsigned char>(str[i])))
+            {
                 return false;
+            }
         }
         return true;
     }
 
-    std::string trim(const std::string& s)
+    std::string trim(const std::string &s)
     {
         std::string::size_type start = 0;
         std::string::size_type end = s.size();
 
         // Find first non‑whitespace
         while (start < end && std::isspace(static_cast<unsigned char>(s[start])))
+        {
             ++start;
+        }
 
         // Find last non‑whitespace
         while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1])))
+        {
             --end;
+        }
 
         return s.substr(start, end - start);
     }
@@ -69,34 +101,27 @@ public:
     public:
         //[JsonInclude]
         bool dirty = false;
-       // [JsonInclude]
+        // [JsonInclude]
         bool finished = false;
-       // [JsonInclude]
+        // [JsonInclude]
         int line = 0;
     };
 
     class DialogueScene final
     {
     public:
-        DialogueScene(bool alignTop, std::optional<std::size_t> loopId, std::vector<std::string>& dialog)
-        {
+        DialogueScene() {}
 
+        DialogueScene(bool alignTop, std::optional<std::size_t> loopId, std::vector<std::string> &dialog)
+            : AlignTop(alignTop), LoopID(loopId), _lines(dialog)
+        {
         }
 
-        /*
-        [JsonIgnore]
-        public bool AlignTop { get; private set; }
-        [JsonIgnore]
-        public int? LoopID { get; private set; }
+        bool AlignTop = false;
+        std::optional<std::size_t> LoopID;
+        std::vector<std::string> _lines;
 
-        [JsonInclude]
-        public DialogueState state;
-
-        private List<string> _lines;
-
-        [JsonIgnore]
-        public int Length => _lines.Count;
-        */
+        DialogueState state;
     };
 
     class DialogueArea final
@@ -113,28 +138,14 @@ public:
         std::map<std::string, DialogueArea> _areas;
     };
 
-    /*
-    std::string GetDialogue(const std::string& npc, const std::string& area, const std::string& scene, int id = -1)
-        {
-            DialogueScene* s = GetScene(npc, area, scene);
-            if(s == nullptr)
-            {
-                return "No text available.";
-            }
+    std::string GetName(std::string line)
+    {
+        return string::split(line, " ")[1];
+    }
 
-            //GlobalState.DialogueTop = s.AlignTop;
+    std::map<std::string, DialogueNPC> newSceneTree;
 
-            //return ReplaceKeys(s.GetDialogue(id));
-        }*/
-
-        std::string GetName(std::string line)
-        {
-//            return line.Split(' ')[1];
-// TODO
-return "";
-        }
-
-    bool Compile(const std::string &path, const std::string& langCode)
+    bool Compile(const std::string &path, const std::string &langCode)
     {
         const std::string fullPath = path + "/dialogue_" + langCode + ".txt";
         printf("Path = %s\n", fullPath.c_str());
@@ -145,12 +156,9 @@ return "";
             return false;
         }
 
-
         ParseState state = ParseState::START;
 
-        std::map<std::string, DialogueNPC> newSceneTree;
-
-        DialogueNPC npc;
+        DialogueNPC* npc = nullptr;
         std::string npcName;
         std::string areaName;
         std::string scene;
@@ -159,13 +167,11 @@ return "";
         std::optional<std::size_t> loopID;
         bool alignTop = false;
 
-        //using Stream stream = AssemblyReaderUtil.GetStream(path);
-        //using StreamReader reader = new StreamReader(stream);
-
         std::string line;
-        while(std::getline(textStream, line))
+        while (std::getline(textStream, line))
         {
             line = string::trim(line);
+            // printf("line = %s\n", line.c_str());
 
             // Skip comments
             if (string::startsWith(line, "#"))
@@ -178,17 +184,17 @@ return "";
             case ParseState::START:
                 if (string::startsWith(line, "npc"))
                 {
-                    //npc = new DialogueNPC();
                     state = ParseState::NPC;
                     npcName = GetName(line);
-                    newSceneTree[npcName] = npc;
+                    newSceneTree[npcName] = {};
+                    npc = &newSceneTree[npcName];
                 }
                 break;
 
             case ParseState::NPC:
                 if (line == "does reset")
                 {
-                    npc.doesReset = true;
+                    npc->doesReset = true;
                     continue;
                 }
                 if (line == "end npc")
@@ -200,7 +206,7 @@ return "";
                 {
                     areaName = GetName(line);
                     state = ParseState::AREA;
-                    //npc.AddArea(areaName);
+                    npc->_areas[areaName] = {};
                 }
                 break;
 
@@ -237,8 +243,9 @@ return "";
                 {
                     state = ParseState::AREA;
                     DialogueScene s(alignTop, loopID, dialogue);
-                    //npc.GetArea(areaName).AddScene(scene, s);
-                    //s.state = GetScene(npcName, areaName, scene).state;
+                    // TODO: Not required ??
+                    // s.state = newSceneTree[npcName].GetArea(areaName)->_scenes[scene].state;
+                    npc->_areas[areaName]._scenes[scene] = s;
                     continue;
                 }
                 if (line == "LOOP")
@@ -250,8 +257,6 @@ return "";
                 break;
             }
         }
-        //SceneTree = newSceneTree;
-
         return true;
     }
 };
@@ -263,7 +268,25 @@ int main(int argc, char **argv)
     DialogCompiler dc;
     if (dc.Compile("../../old/Content/Dialogue", "EN"))
     {
-        printf("Dialog compiled\n");
+        printf("Dialog compiled %d scenes\n", dc.newSceneTree.size());
+        for (auto& [sceneName, sceneDialogNpc] : dc.newSceneTree)
+        {
+            for (auto& [npcName, area] : sceneDialogNpc._areas)
+            {
+                for (auto& [areaName, sceneDialog] : area._scenes)
+                {
+                    printf("scene name [%s] npc name [%s] area name [%s] lines [%d]\n", sceneName.c_str(), npcName.c_str(), areaName.c_str(), sceneDialog._lines.size());
+                    if (!sceneDialog._lines.empty())
+                    {
+                        printf(" lines:\n");
+                        for (auto& line : sceneDialog._lines)
+                        {
+                            printf("  %s\n", line.c_str());
+                        }
+                    }
+                }
+            }
+        }
     }
     else
     {
