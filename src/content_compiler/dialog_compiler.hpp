@@ -3,6 +3,7 @@
 #include "string.hpp"
 #include <optional>
 #include <map>
+#include <stdint.h>
 
 // Compile Content/Dialogue/dialogue_[LANG_CODE].txt into a binary file
 // that is used by the engine
