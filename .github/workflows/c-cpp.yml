@@ -17,7 +17,7 @@ jobs:
       run: |
         cd ..
         wget https://github.com/gbdk-2020/gbdk-2020/releases/download/4.5.0/gbdk-linux64.tar.gz
-        unzip gbdk-linux64.tar.gz
+        tar -xzf gbdk-linux64.tar.gz
 
     - name: Build code
       run: |
