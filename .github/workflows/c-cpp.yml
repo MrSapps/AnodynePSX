@@ -8,17 +8,23 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-    - name: build code
+
+    - name: Download and extract GBDK
       run: |
-        sudo apt-get update
-        sudo apt-get install -y libsdl2-dev cmake
+        cd ..
+        wget https://github.com/gbdk-2020/gbdk-2020/releases/download/4.5.0/gbdk-linux64.tar.gz
+        unzip gbdk-win32.zip
+
+    - name: Build code
+      run: |
         cd src
         mkdir build
         cd build
         cmake ..
         make -j2
+        cd ..
+        make
